@@ -1,0 +1,28 @@
+---
+- name: Install a general virtual machine
+  hosts: all
+  remote_user: barbera.vanschaik@mydre.org
+  become: yes
+  gather_facts: false
+  vars_files:
+    - config.yml
+  tasks:
+    - name: Wait for system to become reachable
+      wait_for_connection:
+        timeout: 300
+
+    - name: Run apt update
+      apt:
+        update_cache: yes
+
+    - name: Update all packages to their latest version
+      apt:
+        name: "*"
+        state: latest
+
+#    - name: Install generic software
+#      apt:
+#        name:
+#        - miniconda
+#        - apptainer
+        
