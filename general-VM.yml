@@ -3,6 +3,7 @@
   hosts: all
   remote_user: barbera.vanschaik@mydre.org
   become: yes
+  connection: local
   gather_facts: false
   vars_files:
     - config.yml
