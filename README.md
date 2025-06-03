@@ -27,6 +27,12 @@ cd ansible
 git pull origin main
 ```
 
+Run a sudo command before you run ansible, otherwise the script can't do operations as root
+
+```
+sudo ls
+```
+
 Install general software
 
 ```
