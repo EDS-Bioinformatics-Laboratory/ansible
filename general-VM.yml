@@ -21,9 +21,9 @@
         name: "*"
         state: latest
 
-#    - name: Install generic software
-#      apt:
-#        name:
-#        - miniconda
-#        - apptainer
-        
+    - name: Install generic software
+      apt:
+        name:
+        - miniconda
+        - apptainer
+        - vscode

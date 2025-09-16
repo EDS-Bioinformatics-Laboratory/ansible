@@ -38,3 +38,14 @@ Install general software
 ```
 ansible-playbook -i hosts -v general-VM.yml
 ```
+
+## To implement
+
+Install:
+
+* conda
+* R, renv
+* common libraries via renv
+* python
+* common python packages via conda environment
+* VScode
