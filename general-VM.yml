@@ -42,9 +42,6 @@
 
     - name: Add Conda to bashrc
       ansible.builtin.lineinfile:
-
-    - name: Add Conda to bashrc
-      ansible.builtin.lineinfile:
         dest: /home/{{ username }}/.bashrc
         regexp: 'conda.sh'
         line: 'source /opt/conda/etc/profile.d/conda.sh'
@@ -58,5 +55,4 @@
         line: 'conda activate base'
         create: yes
         state: present
-        notify: Reload bashrc
 
