@@ -39,3 +39,24 @@
       apt:
         name: "conda"
         state: present
+
+    - name: Add Conda to bashrc
+      ansible.builtin.lineinfile:
+
+    - name: Add Conda to bashrc
+      ansible.builtin.lineinfile:
+        dest: /home/{{ username }}/.bashrc
+        regexp: 'conda.sh'
+        line: 'source /opt/conda/etc/profile.d/conda.sh'
+        create: yes
+        state: present
+
+    - name: Activate conda in bashrc
+      ansible.builtin.lineinfile:
+        dest: /home/{{ username }}/.bashrc
+        regexp: 'conda activate base'
+        line: 'conda activate base'
+        create: yes
+        state: present
+        notify: Reload bashrc
+
