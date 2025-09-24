@@ -21,9 +21,21 @@
         name: "*"
         state: latest
 
-    - name: Install generic software
+    # - name: Install generic software
+    #   apt:
+    #     name:
+    #     - apptainer
+
+    - name: Add Conda repository
+      ansible.builtin.shell: bash /home/{{ username }}/scripts/download-conda.sh
+      args:
+        executable: /bin/bash
+
+    - name: Apt update after adding Conda repo
       apt:
-        name:
-        - miniconda
-        - apptainer
-        - vscode
+        update_cache: yes
+
+    - name: Install Conda
+      apt:
+        name: "conda"
+        state: present
