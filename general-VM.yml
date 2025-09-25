@@ -27,7 +27,7 @@
     #     - apptainer
 
     - name: Add Conda repository
-      ansible.builtin.shell: bash /home/{{ username }}/scripts/download-conda.sh
+      ansible.builtin.shell: bash /home/{{ username }}/ansible/scripts/download-conda.sh
       args:
         executable: /bin/bash
 
