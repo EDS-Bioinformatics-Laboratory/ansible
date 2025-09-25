@@ -18,6 +18,8 @@ Clone this repository
 git clone https://github.com/EDS-Bioinformatics-Laboratory/ansible.git
 ```
 
+Configure ``general-VM.yml`` en ``config.yml``: change the username to your own username.
+
 ## Install basics
 
 Update the git repository
@@ -39,11 +41,18 @@ Install general software
 ansible-playbook -i hosts -v general-VM.yml
 ```
 
+Activate conda by sourcing the bashrc
+
+```
+source ~/.bashrc
+```
+
+
 ## To implement
 
 Install:
 
-* conda
+* ~~conda~~
 * R, renv
 * common libraries via renv
 * python
