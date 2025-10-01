@@ -56,3 +56,14 @@
         create: yes
         state: present
 
+    - name: Download VScode .deb package
+      ansible.builtin.get_url:
+        url: https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64
+        dest: /home/{{ username }}/vscode.deb
+        mode: '0644'
+        force: no
+
+    - name: Install VScode .deb package
+      ansible.builtin.apt:
+        deb: /home/{{ username }}/vscode.deb
+        state: present
