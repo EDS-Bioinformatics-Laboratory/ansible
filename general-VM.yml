@@ -72,8 +72,14 @@
         deb: /home/{{ username }}/vscode.deb
         state: present
 
+    - name: Add Apptainer PPA
+      ansible.builtin.apt_repository:
+        repo: 'ppa:apptainer/ppa'
+        state: present
+        update_cache: yes
 
-    - name: Install Apptainer
-      ansible.builtin.shell: bash /home/{{ username }}/ansible/scripts/download-apptainer.sh
-      args:
-        executable: /bin/bash
+    - name: Install apptainer package
+      ansible.builtin.apt:
+        name: apptainer
+        state: present
+        update_cache: yes
