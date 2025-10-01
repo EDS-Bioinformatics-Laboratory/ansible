@@ -83,3 +83,15 @@
         name: apptainer
         state: present
         update_cache: yes
+
+    - name: Install R
+      ansible.builtin.apt:
+        name: r-base
+        state: present
+        update_cache: yes
+
+    - name: Install R packages
+      ansible.builtin.shell: Rscript /home/{{ username }}/ansible/scripts/install-R-packages.R
+      args:
+        executable: /bin/bash
+        
