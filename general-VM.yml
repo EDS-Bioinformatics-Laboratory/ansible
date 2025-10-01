@@ -22,11 +22,6 @@
         name: "*"
         state: latest
 
-    # - name: Install generic software
-    #   apt:
-    #     name:
-    #     - apptainer
-
     - name: Add Conda repository
       ansible.builtin.shell: bash /home/{{ username }}/ansible/scripts/download-conda.sh
       args:
@@ -64,7 +59,21 @@
         mode: '0644'
         force: no
 
+    - name: Install several packages required for VScode
+      ansible.builtin.apt:
+        name:
+          - libasound2t64
+          - xorg
+          - xauth
+        state: present
+
     - name: Install VScode .deb package
       ansible.builtin.apt:
         deb: /home/{{ username }}/vscode.deb
         state: present
+
+
+    - name: Install Apptainer
+      ansible.builtin.shell: bash /home/{{ username }}/ansible/scripts/download-apptainer.sh
+      args:
+        executable: /bin/bash

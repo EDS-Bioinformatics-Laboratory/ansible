@@ -41,20 +41,21 @@ Install general software
 ansible-playbook -i hosts -v general-VM.yml
 ```
 
-Activate conda by sourcing the bashrc
+Disconnect from the VM and start a new session to:
 
-```
-source ~/.bashrc
-```
+- Activate conda by sourcing the bashrc
+- Enable visual output via X11 (e.g. for VScode)
 
+VScode can run from the commandline: ``code &``
 
 ## To implement
 
 Install:
 
+* ~~python~~
 * ~~conda~~
+* ~~VScode~~
+* ~~Apptainer (Singularity)~~
 * R, renv
 * common libraries via renv
-* python
 * common python packages via conda environment
-* VScode
