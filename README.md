@@ -1,5 +1,15 @@
 # Ansible
-Barbera van Schaik, public repo for installation scripts virtual machines
+
+Repository for installation of frequently used software on empty virtual machines.
+
+Developed by:
+
+* Barbera van Schaik, b.d.vanschaik@amsterdamumc.nl
+* ...
+
+## Requirements
+
+The Ansible script assumes a virtual machine running Ubuntu. It might also work on Debian.
 
 ## Manual steps
 
