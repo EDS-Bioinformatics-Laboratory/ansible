@@ -1,13 +1,12 @@
 ---
 - name: Install a general virtual machine
   hosts: all
-  remote_user: barbera.vanschaik@mydre.org
-  # remote_user: bschaikvan
+  vars_files:
+    - config.yml
+  remote_user: "{{ username }}"
   become: yes
   connection: local
   gather_facts: false
-  vars_files:
-    - config.yml
   tasks:
     - name: Wait for system to become reachable
       wait_for_connection:
@@ -62,7 +61,7 @@
     - name: Install several packages required for VScode
       ansible.builtin.apt:
         name:
-          - libasound2t64
+          - {{ libasound }}
           - xorg
           - xauth
         state: present
