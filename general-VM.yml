@@ -61,7 +61,7 @@
     - name: Install several packages required for VScode
       ansible.builtin.apt:
         name:
-          - {{ libasound }}
+          - "{{ libasound }}"
           - xorg
           - xauth
         state: present
