@@ -72,17 +72,17 @@
         deb: /home/{{ username }}/vscode.deb
         state: present
 
-    - name: Add Apptainer PPA
-      ansible.builtin.apt_repository:
-        repo: 'ppa:apptainer/ppa'
-        state: present
-        update_cache: yes
+    - name: Download Apptainer .deb package
+      ansible.builtin.get_url:
+        url: https://github.com/apptainer/apptainer/releases/download/v1.4.3/apptainer_1.4.3_amd64.deb
+        dest: /home/{{ username }}/apptainer.deb
+        mode: '0644'
+        force: no
 
     - name: Install apptainer package
       ansible.builtin.apt:
-        name: apptainer
+        deb: /home/{{ username }}/apptainer.deb
         state: present
-        update_cache: yes
 
     - name: Install R
       ansible.builtin.apt:
