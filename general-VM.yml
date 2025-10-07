@@ -1,8 +1,8 @@
 ---
 - name: Install a general virtual machine
   hosts: all
-  # remote_user: barbera.vanschaik@mydre.org
-  remote_user: bschaikvan
+  remote_user: barbera.vanschaik@mydre.org
+  # remote_user: bschaikvan
   become: yes
   connection: local
   gather_facts: false
