@@ -44,6 +44,7 @@ sudo ls
 Install software
 
 ```
+cd ansible
 ansible-playbook -i hosts -v general-VM.yml
 ```
 
