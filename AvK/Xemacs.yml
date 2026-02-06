@@ -1,0 +1,101 @@
+---
+- name: Install XEmacs on Ubuntu with package(s)
+  hosts: all
+  vars_files:
+    - config.yml
+  remote_user: "{{ username }}"
+  become: yes
+  connection: local
+  gather_facts: false
+  
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      
+    - name: Install XEmacs packages
+      apt:
+        name:
+          - xemacs21
+          - xemacs21-bin
+          - xemacs21-support
+          - xemacs21-basesupport
+        state: present
+        
+    - name: Create XEmacs package directory
+      file:
+        path: /usr/local/share/xemacs/site-packages
+        state: directory
+        mode: '0755'
+        
+    - name: Download markdown-mode package
+      get_url:
+        url: https://raw.githubusercontent.com/jrblevin/markdown-mode/master/markdown-mode.el
+        dest: /usr/local/share/xemacs/site-packages/markdown-mode.el
+        mode: '0644'
+        
+    - name: Download yaml-mode package
+      get_url:
+        url: https://raw.githubusercontent.com/yoshiki/yaml-mode/master/yaml-mode.el
+        dest: /usr/local/share/xemacs/site-packages/yaml-mode.el
+        mode: '0644'
+        
+    - name: Download python-mode package
+      get_url:
+        url: https://gitlab.com/groups/python-mode-devs/-/raw/master/python-mode.el
+        dest: /usr/local/share/xemacs/site-packages/python-mode.el
+        mode: '0644'
+        
+    - name: Create XEmacs init file to load all packages
+      copy:
+        content: |
+          ;; Add local site-packages to load path
+          (add-to-list 'load-path "/usr/local/share/xemacs/site-packages")
+          
+          ;; Load markdown-mode
+          (autoload 'markdown-mode "markdown-mode"
+             "Major mode for editing Markdown files" t)
+          (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+          (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+          (setq markdown-command "markdown")
+          
+          ;; Load yaml-mode
+          (autoload 'yaml-mode "yaml-mode"
+             "Major mode for editing YAML files" t)
+          (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
+          (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+          
+          ;; Load python-mode
+          (autoload 'python-mode "python-mode"
+             "Major mode for editing Python files" t)
+          (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+          (add-to-list 'interpreter-mode-alist '("python" . python-mode))
+          (add-to-list 'interpreter-mode-alist '("python3" . python-mode))
+          
+          ;; Optional: Python-mode settings
+          (setq py-indent-offset 4)
+          (setq python-indent 4)
+        dest: /etc/xemacs21/site-start.d/50custom-modes.el
+        mode: '0644'
+        
+    - name: Verify XEmacs installation
+      command: xemacs --version
+      register: xemacs_version
+      changed_when: false
+      
+    - name: Display XEmacs version
+      debug:
+        msg: "{{ xemacs_version.stdout_lines[0] }}"
+        
+    - name: Display installation summary
+      debug:
+        msg:
+          - "XEmacs installation complete!"
+          - "Installed packages:"
+          - "  - markdown-mode (for .md, .markdown files)"
+          - "  - yaml-mode (for .yaml, .yml files)"
+          - "  - python-mode (for .py files)"
+          - ""
+          - "To use XEmacs, run: xemacs"
+          - "Test with: xemacs test.py or xemacs config.yml"

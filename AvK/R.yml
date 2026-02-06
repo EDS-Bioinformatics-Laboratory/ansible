@@ -1,0 +1,25 @@
+---
+- name: Install a general virtual machine
+  hosts: all
+  vars_files:
+    - config.yml
+  remote_user: "{{ username }}"
+  become: yes
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Wait for system to become reachable
+      wait_for_connection:
+        timeout: 300
+
+    - name: Install R
+      ansible.builtin.apt:
+        name: r-base
+        state: present
+        update_cache: yes
+
+    - name: Install R packages
+      ansible.builtin.shell: Rscript /home/{{ username }}/ansible/scripts/install-R-packages.R
+      args:
+        executable: /bin/bash
+        

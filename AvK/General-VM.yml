@@ -1,0 +1,91 @@
+---
+- name: Install a general virtual machine
+  hosts: all
+  vars_files:
+    - config.yml
+  remote_user: "{{ username }}"
+  become: yes
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Wait for system to become reachable
+      wait_for_connection:
+        timeout: 300
+
+    - name: Run apt update
+      apt:
+        update_cache: yes
+
+    - name: Update all packages to their latest version
+      apt:
+        name: "*"
+        state: latest
+
+    - name: Add Conda repository
+      ansible.builtin.shell: bash /home/{{ username }}/ansible/scripts/download-conda.sh
+      args:
+        executable: /bin/bash
+
+    - name: Apt update after adding Conda repo
+      apt:
+        update_cache: yes
+
+    - name: Install Conda
+      apt:
+        name: "conda"
+        state: present
+
+    - name: Install gedit
+      apt:
+        name: "gedit"
+        state: present
+        
+    - name: Add Conda to bashrc
+      ansible.builtin.lineinfile:
+        dest: /home/{{ username }}/.bashrc
+        regexp: 'conda.sh'
+        line: 'source /opt/conda/etc/profile.d/conda.sh'
+        create: yes
+        state: present
+
+    - name: Activate conda in bashrc
+      ansible.builtin.lineinfile:
+        dest: /home/{{ username }}/.bashrc
+        regexp: 'conda activate base'
+        line: 'conda activate base'
+        create: yes
+        state: present
+
+    - name: Download VScode .deb package
+      ansible.builtin.get_url:
+        url: https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64
+        dest: /home/{{ username }}/vscode.deb
+        mode: '0644'
+        force: no
+
+    - name: Install several packages required for VScode
+      ansible.builtin.apt:
+        name:
+          - "{{ libasound }}"
+          - xorg
+          - xauth
+        state: present
+
+    - name: Install VScode .deb package
+      ansible.builtin.apt:
+        deb: /home/{{ username }}/vscode.deb
+        state: present
+
+    - name: Download Apptainer .deb package
+      ansible.builtin.get_url:
+        url: https://github.com/apptainer/apptainer/releases/download/v1.4.3/apptainer_1.4.3_amd64.deb
+        dest: /home/{{ username }}/apptainer.deb
+        mode: '0644'
+        force: no
+
+    - name: Install apptainer package
+      ansible.builtin.apt:
+        deb: /home/{{ username }}/apptainer.deb
+        state: present
+
+        
