@@ -14,6 +14,10 @@ Developed by:
 
 
 
+## Documentation
+
+See Barbera's [slide deck](https://github.com/EDS-Bioinformatics-Laboratory/BioLabMatters/blob/master/Presentations/Schaik_20251016-tutorial-VM-ansible.pptx) for examples of how to make this work on MyDre and SURF.
+
 ## Requirements
 
 The Ansible script assumes a virtual machine running Ubuntu. It might also work on Debian.
@@ -47,6 +51,7 @@ sudo ls
 Install software
 
 ```
+cd ansible
 ansible-playbook -i hosts -v general-VM.yml
 ```
 
