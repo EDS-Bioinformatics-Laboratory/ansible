@@ -1,0 +1,36 @@
+---
+- name: Install compilers
+  hosts: all
+  vars_files:
+    - config.yml
+  remote_user: "{{ username }}"
+  become: yes
+  connection: local
+  gather_facts: false
+  
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      
+    - name: Install compilers
+      apt:
+        name:
+          - gcc
+          - g++
+          - gfortran
+          - build-essential
+        state: present
+      
+    - name: Verify installations
+      shell: |
+        echo "GCC: $(gcc --version | head -n1)"
+        echo "G++: $(g++ --version | head -n1)"
+        echo "gfortran: $(gfortran --version | head -n1)"
+      register: versions
+      changed_when: false
+      
+    - name: Display versions
+      debug:
+        msg: "{{ versions.stdout_lines }}"

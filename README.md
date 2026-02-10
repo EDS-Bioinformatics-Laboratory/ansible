@@ -5,7 +5,14 @@ Repository for installation of frequently used software on empty virtual machine
 Developed by:
 
 * Barbera van Schaik, b.d.vanschaik@amsterdamumc.nl
-* ...
+* Antoine van Kampen, a.h.vankampen@amsterdamumc.nl
+* Perry Moerland, p.d.moerland@amsterdamumc.nl
+
+
+
+**NOTE: the scripts in the root folder are obsolete.**
+
+
 
 ## Requirements
 

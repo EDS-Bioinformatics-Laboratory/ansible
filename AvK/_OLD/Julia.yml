@@ -1,0 +1,63 @@
+---
+- name: Install Julia on Ubuntu
+  hosts: all
+  vars_files:
+    - config.yml
+  remote_user: "{{ username }}"
+  become: true
+  connection: local
+  vars:
+    julia_version: "1.12.4"
+    julia_major_minor: "1.12"
+    julia_install_dir: "/opt/julia"
+    julia_bin_link: "/usr/local/bin/julia"
+  
+  tasks:
+    - name: Install required dependencies
+      apt:
+        name:
+          - wget
+          - tar
+          - ca-certificates
+        state: present
+        update_cache: yes
+
+    - name: Create Julia installation directory
+      file:
+        path: "{{ julia_install_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Download Julia tarball
+      get_url:
+        url: "https://julialang-s3.julialang.org/bin/linux/x64/{{ julia_major_minor }}/julia-{{ julia_version }}-linux-x86_64.tar.gz"
+        dest: "/tmp/julia-{{ julia_version }}.tar.gz"
+        mode: '0644'
+
+    - name: Extract Julia archive
+      unarchive:
+        src: "/tmp/julia-{{ julia_version }}.tar.gz"
+        dest: "{{ julia_install_dir }}"
+        remote_src: yes
+        extra_opts: [--strip-components=1]
+        creates: "{{ julia_install_dir }}/bin/julia"
+
+    - name: Create symbolic link for Julia
+      file:
+        src: "{{ julia_install_dir }}/bin/julia"
+        dest: "{{ julia_bin_link }}"
+        state: link
+
+    - name: Verify Julia installation
+      command: julia --version
+      register: julia_version_output
+      changed_when: false
+
+    - name: Display Julia version
+      debug:
+        var: julia_version_output.stdout
+
+    - name: Clean up downloaded tarball
+      file:
+        path: "/tmp/julia-{{ julia_version }}.tar.gz"
+        state: absent

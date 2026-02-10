@@ -21,11 +21,41 @@
         name: "*"
         state: latest
 
+    - name: Add Conda repository
+      ansible.builtin.shell: bash /home/{{ username }}/ansible/scripts/download-conda.sh
+      args:
+        executable: /bin/bash
+
+    - name: Apt update after adding Conda repo
+      apt:
+        update_cache: yes
+
+    - name: Install Conda
+      apt:
+        name: "conda"
+        state: present
+
     - name: Install gedit
       apt:
         name: "gedit"
         state: present
-   
+        
+    - name: Add Conda to bashrc
+      ansible.builtin.lineinfile:
+        dest: /home/{{ username }}/.bashrc
+        regexp: 'conda.sh'
+        line: 'source /opt/conda/etc/profile.d/conda.sh'
+        create: yes
+        state: present
+
+    - name: Activate conda in bashrc
+      ansible.builtin.lineinfile:
+        dest: /home/{{ username }}/.bashrc
+        regexp: 'conda activate base'
+        line: 'conda activate base'
+        create: yes
+        state: present
+
     - name: Download VScode .deb package
       ansible.builtin.get_url:
         url: https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64
