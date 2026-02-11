@@ -45,11 +45,11 @@
 #        state: present
 #        executable: pip3
 
-#    - name: Install python packages
-#      ansible.builtin.shell:
-#        cmd: conda install -y numpy pandas
-#      args:
-#        executable: /bin/bash
+     - name: Install python packages
+       ansible.builtin.shell:
+         cmd: /opt/conda/bin/conda install -y numpy pandas
+       args:
+         executable: /bin/bash
         
     - name: Verify Python installation
       ansible.builtin.command:
@@ -57,25 +57,25 @@
       register: python_version
       changed_when: false
 
-    - name: Verify numpy installation
-      ansible.builtin.command:
-        cmd: python3 -c "import numpy; print(f'numpy {numpy.__version__}')"
-      register: numpy_version
-      changed_when: false
+#    - name: Verify numpy installation
+#      ansible.builtin.command:
+#        cmd: python3 -c "import numpy; print(f'numpy {numpy.__version__}')"
+#      register: numpy_version
+#      changed_when: false
 
-    - name: Verify pandas installation
-      ansible.builtin.command:
-        cmd: python3 -c "import pandas; print(f'pandas {pandas.__version__}')"
-      register: pandas_version
-      changed_when: false
+#    - name: Verify pandas installation
+#      ansible.builtin.command:
+#        cmd: python3 -c "import pandas; print(f'pandas {pandas.__version__}')"
+#      register: pandas_version
+#      changed_when: false
 
     - name: Display installation summary
       ansible.builtin.debug:
         msg:
           - "Installation complete!"
           - "{{ python_version.stdout }}"
-          - "{{ numpy_version.stdout }}"
-          - "{{ pandas_version.stdout }}"
+#          - "{{ numpy_version.stdout }}"
+#          - "{{ pandas_version.stdout }}"
           
     - name: Add Conda to bashrc
       ansible.builtin.lineinfile:
