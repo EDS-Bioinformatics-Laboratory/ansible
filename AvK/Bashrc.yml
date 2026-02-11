@@ -1,5 +1,5 @@
 ---
-- name: Add rclone mount alias to .bashrc
+- name: Modify .bashrc (add aliases) 
   hosts: all
   vars_files:
     - config.yml
@@ -40,7 +40,15 @@
         state: present
         create: yes
         backup: yes
-                
+
+   - name: Add alias to clone ansible repository
+      ansible.builtin.lineinfile:
+        path: "{{ root_path }}/.bashrc"
+        line: "alias aclone='git clone https://github.com/EDS-Bioinformatics-Laboratory/ansible.git'"
+        state: present
+        create: yes
+        backup: yes
+        
     - name: Display success message
       ansible.builtin.debug:
         msg: "Aliases have been added to ~/.bashrc. Run 'source ~/.bashrc' or open a new terminal to use it."

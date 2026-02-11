@@ -37,14 +37,20 @@
         state: latest
         executable: pip3
 
-    - name: Install numpy and pandas
-      ansible.builtin.pip:
-        name:
-          - numpy
-          - pandas
-        state: present
-        executable: pip3
+#    - name: Install numpy and pandas
+#      ansible.builtin.pip:
+#        name:
+#          - numpy
+#          - pandas
+#        state: present
+#        executable: pip3
 
+    - name: Install python packages
+      ansible.builtin.shell:
+        cmd: conda install -y numpy pandas
+      args:
+        executable: /bin/bash
+        
     - name: Verify Python installation
       ansible.builtin.command:
         cmd: python3 --version
