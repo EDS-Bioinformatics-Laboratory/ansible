@@ -45,11 +45,11 @@
 #        state: present
 #        executable: pip3
 
-    - name: Install python packages
-      ansible.builtin.shell:
-        cmd: conda install -y numpy pandas
-      args:
-        executable: /bin/bash
+#    - name: Install python packages
+#      ansible.builtin.shell:
+#        cmd: conda install -y numpy pandas
+#      args:
+#        executable: /bin/bash
         
     - name: Verify Python installation
       ansible.builtin.command:

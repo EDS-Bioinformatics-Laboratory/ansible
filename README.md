@@ -22,25 +22,37 @@ See Barbera's [slide deck](https://github.com/EDS-Bioinformatics-Laboratory/BioL
 
 The Ansible script assumes a virtual machine running Ubuntu. It might also work on Debian.
 
-## Manual steps
+## Setting up an Ubuntu VM
 
-Login to the VM and install Ansible and Git.
+1. Create a new VM on myDre
+
+2. Login to the VM using your myDRE account using RDP (X environment, or SSH  (terminal).
 
 ```
 sudo apt update
+sudo apt upgrade 
+```
+
+3. Stop and restart the VM, and login again.
+
+4. Install Ansible and Git.
+
+```
 sudo apt install software-properties-common
 sudo apt install ansible git
 ```
 
-Clone this repository
+
+5. Clone the ansible repository
 
 ```
 git clone https://github.com/EDS-Bioinformatics-Laboratory/ansible.git
+cd ansible
 ```
 
 Configure ``config.yml``: change the username to your own username.
 
-## Installation with Ansible
+## Installation and configuration of software with Ansible
 
 Run a sudo command before you run ansible, otherwise the script can't do operations as root
 
@@ -48,11 +60,10 @@ Run a sudo command before you run ansible, otherwise the script can't do operati
 sudo ls
 ```
 
-Install software
+Execute playbooks
 
 ```
-cd ansible
-ansible-playbook -i hosts -v general-VM.yml
+ansible-playbook -i hosts -v General.yml
 ```
 
 Disconnect from the VM and start a new session, this will:

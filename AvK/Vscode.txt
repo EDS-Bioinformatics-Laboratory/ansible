@@ -1,0 +1,28 @@
+---
+- name: Install a general virtual machine
+  hosts: all
+  vars_files:
+    - config.yml
+  remote_user: "{{ username }}"
+  become: yes
+  connection: local
+  gather_facts: false
+  
+  tasks:
+    - name: Add Microsoft GPG key
+      ansible.builtin.shell: |
+      wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+      install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/
+      args:
+        creates: /etc/apt/trusted.gpg.d/microsoft.gpg
+
+    - name: Add VSCode repository
+      ansible.builtin.apt_repository:
+      repo: "deb [arch=amd64] https://packages.microsoft.com/repos/code stable main"
+      state: present
+
+    - name: Install VSCode
+      ansible.builtin.apt:
+      name: code
+      state: present
+      update_cache: yes

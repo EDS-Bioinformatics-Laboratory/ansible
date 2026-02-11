@@ -41,7 +41,7 @@
         create: yes
         backup: yes
 
-   - name: Add alias to clone ansible repository
+    - name: Add alias to clone ansible repository
       ansible.builtin.lineinfile:
         path: "{{ root_path }}/.bashrc"
         line: "alias aclone='git clone https://github.com/EDS-Bioinformatics-Laboratory/ansible.git'"
