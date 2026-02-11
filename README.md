@@ -66,9 +66,17 @@ Execute playbooks
 ansible-playbook -i hosts -v General.yml
 ```
 
-Disconnect from the VM and start a new session, this will:
+General.yml will also create ~/Desktop/RD to which you can mount your Research Drive account
 
-- Activate conda by sourcing the bashrc
+```
+ansible-playbook -i hosts -v Vscode.yml
+ansible-playbook -i hosts -v Conda.yml
+source ~/.bashrc
+```
+
+This will activata conda.
+
+Disconnect from the VM and start a new session, this will:
 - Enable visual output via X11 (e.g. for VScode)
 
 VScode can run from the commandline: ``code &``

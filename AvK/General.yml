@@ -46,7 +46,7 @@
         
     - name: Create ~/Desktop/RD directory for mounting Research Drive
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/Desktop/RD"
+        path: "{{ root_path }}/Desktop/RD"
         state: directory
         mode: '0755'
 
