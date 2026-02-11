@@ -32,26 +32,6 @@
         name: "gedit"
         state: present
    
-    - name: Download VScode .deb package
-      ansible.builtin.get_url:
-        url: https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64
-        dest: /home/{{ username }}/vscode.deb
-        mode: '0644'
-        force: no
-
-    - name: Install several packages required for VScode
-      ansible.builtin.apt:
-        name:
-          - "{{ libasound }}"
-          - xorg
-          - xauth
-        state: present
-
-    - name: Install VScode .deb package
-      ansible.builtin.apt:
-        deb: /home/{{ username }}/vscode.deb
-        state: present
-
     - name: Download Apptainer .deb package
       ansible.builtin.get_url:
         url: https://github.com/apptainer/apptainer/releases/download/v1.4.3/apptainer_1.4.3_amd64.deb

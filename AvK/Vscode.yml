@@ -10,19 +10,27 @@
   gather_facts: false
 
   tasks: 
+    - name: Install several packages required for VScode
+      ansible.builtin.apt:
+        name:
+          - "{{ libasound }}"
+          - xorg
+          - xauth
+        state: present
+        
     - name: Download Microsoft GPG key
-    ansible.builtin.get_url:
+      ansible.builtin.get_url:
         url: https://packages.microsoft.com/keys/microsoft.asc
         dest: /usr/share/keyrings/microsoft.asc
         mode: '0644'
 
     - name: Add VSCode repository
-    ansible.builtin.apt_repository:
+      ansible.builtin.apt_repository:
         repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.asc] https://packages.microsoft.com/repos/code stable main"
-    state: present
+      state: present
 
     - name: Install VSCode
-    ansible.builtin.apt:
-       name: code
-    state: present
-    update_cache: yes
+      ansible.builtin.apt:
+        name: code
+        state: present
+        update_cache: yes
