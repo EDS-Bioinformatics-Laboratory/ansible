@@ -7,6 +7,7 @@
   become: yes
   connection: local
   gather_facts: false
+  
   tasks:
     - name: Wait for system to become reachable
       wait_for_connection:
@@ -21,6 +22,11 @@
         name: "*"
         state: latest
 
+    - name: Install rclone
+      apt:
+        name: "rclone"
+        state: latest
+        
     - name: Install gedit
       apt:
         name: "gedit"

@@ -8,16 +8,16 @@
   connection: local
   gather_facts: false
   
-  vars:
-    remote_path: "RD:"
-    local_mount: "/home/antoine.vankampen@mydre.org/Desktop/RD"
-    root_path: "/home/antoine.vankampen@mydre.org"
+  #vars:
+  #  remote_path: "RD:"
+  #  local_mount: "/home/antoine.vankampen@mydre.org/Desktop/RD"
+  #  root_path: "/home/antoine.vankampen@mydre.org"
   
   tasks:
     - name: Add rclone mount alias to .bashrc
       ansible.builtin.lineinfile:
         path: "{{ root_path }}/.bashrc"
-        line: "alias rdmount='rclone mount --use-cookies --timeout 15m {{ remote_path }} {{ local_mount }} --vfs-cache-mode writes'"
+        line: "alias rdmount='rclone mount --use-cookies --timeout 15m {{ remote_path }} {{ local_mount }} --vfs-cache-mode writes &'"
         #regexp: "^alias {{ alias_name }}="
         state: present
         create: yes
