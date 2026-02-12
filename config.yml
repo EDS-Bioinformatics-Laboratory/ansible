@@ -10,10 +10,12 @@ local_mount: "/home/antoine.vankampen@mydre.org/Desktop/RD"
 root_path: "/home/antoine.vankampen@mydre.org"
 
 # Feature flags  (only add this if we want to configure it here, instead of command line)
-run_general-VM: true
+run_General: true
+run_Vscode: true
 run_Conda: true
-run_Xemacs: true
+run_Emacs: true
 run_run_Julia: true
+run_run_Containers: true
 run_Compilers: true
 run_R: true
 run_Bashrc: true

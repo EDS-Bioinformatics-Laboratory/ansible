@@ -23,26 +23,41 @@
       tags:
         - Conda
         
+   - name: Run VScode playbook
+      ansible.builtin.include_tasks:
+        file: tasks/Vscode.yml
+      when: run_Vscode | default(true)
+      tags:
+        - vscode
+
    - name: Run Julia playbook
       ansible.builtin.include_tasks:
-        file: tasks/general-VM.yml
+        file: tasks/Julia.yml
       when: run_Julia | default(true)
       tags:
         - julia
 
+
    - name: Run Compilers playbook
       ansible.builtin.include_tasks:
-        file: tasks/general-VM.yml
+        file: tasks/Compilers.yml
       when: run_Compilers | default(true)
       tags:
         - compilers
-
-    - name: Run Xemacs playbook
+        
+   - name: Run Containers playbook
       ansible.builtin.include_tasks:
-        file: tasks/Xemacs.yml
-      when: run_Xemacs | default(true)
+        file: tasks/Containers.yml
+      when: run_Containers | default(true)
       tags:
-        - Xemcs
+        - containers
+
+    - name: Run Emacs playbook
+      ansible.builtin.include_tasks:
+        file: tasks/Emacs.yml
+      when: run_Emacs | default(true)
+      tags:
+        - emacs
     
     - name: Run R playbook
       ansible.builtin.include_tasks:
@@ -51,7 +66,7 @@
       tags:
         - R
         
- - name: Run bashrc playbook
+    - name: Run bashrc playbook
       ansible.builtin.include_tasks:
         file: tasks/Bashrc.yml
       when: run_Bashrc | default(true)
