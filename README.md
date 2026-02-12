@@ -1,16 +1,12 @@
-# Ansible
+# Setup default myDre VM 
 
-Repository for installation of frequently used software on empty virtual machines.
+Repository for installation of frequently used software on empty virtual machines (VM) on myDRE. This might also work on SURF Research Cloud but has not been tested yet.
 
 Developed by:
 
 * Barbera van Schaik, b.d.vanschaik@amsterdamumc.nl
 * Antoine van Kampen, a.h.vankampen@amsterdamumc.nl
 * Perry Moerland, p.d.moerland@amsterdamumc.nl
-
-
-
-**NOTE: the scripts in the root folder are obsolete.**
 
 
 
@@ -24,49 +20,50 @@ The Ansible script assumes a virtual machine running Ubuntu. It might also work 
 
 ## Setting up an Ubuntu VM
 
-1. Create a new VM on myDre
+* Create a new VM on myDre
 
-2. Login to the VM using your myDRE account using RDP (X environment, or SSH  (terminal).
+* Login to the VM using your myDRE account using RDP (X environment, or SSH  (terminal).
 
 ```
 sudo apt update
 sudo apt upgrade 
 ```
 
-3. Stop and restart the VM, and login again.
+* Stop and restart the VM, and login again.
 
-4. Install Ansible and Git.
+* Install Ansible and Git.
 
 ```
 sudo apt install software-properties-common
 sudo apt install ansible git
 ```
 
-
-5. Clone the ansible repository
+* Clone the ansible repository
 
 ```
 git clone https://github.com/EDS-Bioinformatics-Laboratory/ansible.git
 cd ansible
 ```
 
-Configure ``config.yml``: change the username to your own username.
+* Modify the configuration file ``config.yml``: e.g., change the username to your own myDre username.
+
+
 
 ## Installation and configuration of software with Ansible
 
-Run a sudo command before you run ansible, otherwise the script can't do operations as root
+* Run a sudo command before you run ansible, otherwise the script can't do operations as root
 
 ```
 sudo ls
 ```
 
-Execute playbooks
+* Execute playbooks
 
 ```
 ansible-playbook -i hosts -v General.yml
 ```
 
-General.yml will also create ~/Desktop/RD to which you can mount your Research Drive account
+General.yml will also create ~/Desktop/RD to which you can mount your Research Drive account (see below)
 
 ```
 ansible-playbook -i hosts -v Vscode.yml
@@ -76,20 +73,61 @@ source ~/.bashrc
 
 This will activata conda.
 
-Disconnect from the VM and start a new session, this will:
-- Enable visual output via X11 (e.g. for VScode)
-
 VScode can run from the commandline: ``code &``
 
-## Software installation
 
-* python
-* conda
-* VScode
-* Apptainer (Singularity)
-* R, renv
 
-## To implement
+## Mount (SURF) Research Drive
 
-* common libraries via renv
-* common python packages via conda environment
+Make sure you have a Research Drive account.
+
+Use **Rclone** to mount Research Drive. Rclone is installed by one of the ansible playbooks above. Rclone is a command-line program to manage files on cloud storage. This makes it much easier to transfer files between your local computer and myDre in comparison to the default upload/download system.
+
+
+If needed, then first install Rclone manually:
+
+```
+sudo -v ; curl https://rclone.org/install.sh | sudo bash
+or
+sudo apt install rclone
+```
+
+_Connect to your Research Drive account_ 
+See: [SURF Wiki](https://servicedesk.surf.nl/wiki/spaces/WIKI/pages/117179081/RD+How+to+use+Rclone+with+Research+Drive) for more information to mount your Research drive
+
+_Webdav URL:_ 
+https://amsterdamumc.data.surf.nl/remote.php/dav/files/a.h.vankampen%40amsterdamumc.nl
+
+_Configuration is stored in:_
+.config/rclone
+
+_Example commands_
+```
+rclone ls RD:
+rclone copy /my/folder RD:my/destination/folder
+```
+
+_Working with large objects_
+When you want to upload large files to Research Drive, we recommend using a timeout of 10 minutes per gigabyte of the largest source file.
+
+As an example, the largest file in the source directory is 5GB. Calculating the argument for --timeout gives: 10 minutes x 5GB = 50 minutes:
+
+`rclone copy --use-cookies --timeout 50m ~/my_5gb_file.bin RD:my/destination/folder`
+
+Important: Since this can cause data loss, test first with the --dry-run flag to see exactly what would be copied and deleted.
+Note that files in the destination won’t be deleted if there were any errors at any point.
+If my/destination/folder doesn’t exist, it is created and the contents of /my/folder goes there.
+
+
+_Use Rclone to mount file systems in user space_
+Using Rclone to mount a file system in user space is done as follows:
+
+`rclone mount --use-cookies --timeout 15m RD: /path/to/local/mount`
+
+The flag `--use-cookies` is needed, to get you always on the same Research Drive back-end, to prevent file lock between back-ends. The timeout flag is useful for uploading large files, we recommend using a timeout of 10 minutes per gigabyte of the largest source file.
+
+You can unmount this file system by:
+
+`fusermount -u /path/to/local/mount`
+	
+**Note:** the ansible playbook bashrc will add rdmount and rdumount to .bashrc
