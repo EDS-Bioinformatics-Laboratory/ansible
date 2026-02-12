@@ -79,7 +79,8 @@ VScode can run from the commandline: ``code &``
 ansible-playbook -i hosts -v Bashrc.yml
 ansible-playbook -i hosts -v Compilers.yml
 ansible-playbook -i hosts -v R.yml
-ansible-playbook -i hosts -v Julia.ymlansible-playbook -i hosts -v Xemacs.yml
+ansible-playbook -i hosts -v Julia.yml
+ansible-playbook -i hosts -v Xemacs.yml
 ```
 
 ## Mount (SURF) Research Drive
