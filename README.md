@@ -67,7 +67,7 @@ General.yml will also create ~/Desktop/RD to which you can mount your Research D
 
 ```
 ansible-playbook -i hosts -v Vscode.yml
-ansible-playbook -i hosts -v Conda.yml
+ansible-playbook -i hosts -v Conda.yml  #might be necessary to run with sudo
 source ~/.bashrc
 ```
 
@@ -80,6 +80,7 @@ ansible-playbook -i hosts -v Bashrc.yml
 ansible-playbook -i hosts -v Compilers.yml
 ansible-playbook -i hosts -v R.yml
 ansible-playbook -i hosts -v Julia.yml
+ansible-playbook -i hosts -v Containers
 ansible-playbook -i hosts -v Xemacs.yml
 ```
 
@@ -148,6 +149,7 @@ The following websites should be added to the myDre [External Access List](https
 
 I also provide the list here in case is magically disappears on myDre. Then just copy this list back into the External Access List..
 
+docker.com   
 code.visualstudio.com  
 office.com  
 microsoftonline.com  

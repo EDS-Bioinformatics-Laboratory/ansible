@@ -32,18 +32,6 @@
         name: "gedit"
         state: present
    
-    - name: Download Apptainer .deb package
-      ansible.builtin.get_url:
-        url: https://github.com/apptainer/apptainer/releases/download/v1.4.3/apptainer_1.4.3_amd64.deb
-        dest: /home/{{ username }}/apptainer.deb
-        mode: '0644'
-        force: no
-
-    - name: Install apptainer package
-      ansible.builtin.apt:
-        deb: /home/{{ username }}/apptainer.deb
-        state: present
-        
     - name: Create ~/Desktop/RD directory for mounting Research Drive
       ansible.builtin.file:
         path: "{{ root_path }}/Desktop/RD"
@@ -54,8 +42,8 @@
 
     - name: Clone ansible repository
       ansible.builtin.git:
-        repo: https://github.com/EDS-Bioinformatics-Laboratory/ansible.git
-        dest: "{{ root_path }}"
+        repo: https://github.com/EDS-Bioinformatics-Laboratory/ENCORE.git
+        dest: "{{ root_path }}/ENCORE"
         version: "{{ ansible_repo_branch | default('main') }}"
         update: yes
       become: no
