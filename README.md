@@ -101,8 +101,8 @@ sudo apt install rclone
 _Connect to your Research Drive account_ 
 See: [SURF Wiki](https://servicedesk.surf.nl/wiki/spaces/WIKI/pages/117179081/RD+How+to+use+Rclone+with+Research+Drive) for more information to mount your Research drive
 
-_Webdav URL:_ 
-https://amsterdamumc.data.surf.nl/remote.php/dav/files/a.h.vankampen%40amsterdamumc.nl
+_Webdav URL (example):_ 
+https://amsterdamumc.data.surf.nl/remote.php/dav/files/a.h.vankampen@amsterdamumc.nl
 
 _Configuration is stored in:_
 .config/rclone

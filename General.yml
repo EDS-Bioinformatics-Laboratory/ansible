@@ -49,5 +49,19 @@
         path: "{{ root_path }}/Desktop/RD"
         state: directory
         mode: '0755'
+        become: no
+        tags: rd
 
-        
+    - name: Clone ansible repository
+      ansible.builtin.git:
+        repo: https://github.com/EDS-Bioinformatics-Laboratory/ansible.git
+        dest: "{{ root_path }}"
+        version: "{{ ansible_repo_branch | default('main') }}"
+        update: yes
+      become: no
+      environment:
+        HOME: "{{ root_path }}"
+
+    - name: Display success message
+      ansible.builtin.debug:
+        msg: "Repository cloned to {{ root_path }}"  

@@ -47,15 +47,9 @@
 
     - name: Install python packages
       ansible.builtin.shell:
-        cmd: /opt/conda/bin/conda install -y numpy pandas notebook=7
+        cmd: /opt/conda/bin/conda install -y numpy pandas
       args:
         executable: /bin/bash
-      environment:
-        HOME: "{{ root_path }}"
-        USER: "{{ username }}"
-        CONDA_PKGS_DIRS: "{{ root_path }}/.conda/pkgs"
-        CONDA_ENVS_PATH: "{{ root_path }}/.conda/envs"
-      become: no
         
     - name: Verify Python installation
       ansible.builtin.command:
