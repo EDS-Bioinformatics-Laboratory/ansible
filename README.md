@@ -131,3 +131,35 @@ You can unmount this file system by:
 `fusermount -u /path/to/local/mount`
 	
 **Note:** the ansible playbook bashrc will add rdmount and rdumount to .bashrc
+
+
+
+## **External Access list**
+
+[[here](https://mydre.org/workspaces/dws-3049-AUBioLab/access/domain)]
+
+The following websites should be added to the myDre [External Access List](https://support.mydre.org/portal/en/kb/articles/testing-self-service-domain-allowlisting) if these are not there already. This ensures that myDre can access these sites. The External Access List is global for all Workspaces and VMs. In principle, this list will never be deleted and, therefore, only needs to be setup once. In case you need access to another website (e.g., to install an R package), then simply add it to the list.
+
+I also provide the list here in case is magically disappears on myDre. Then just copy this list back into the External Access List..
+
+code.visualstudio.com
+office.com
+microsoftonline.com
+mydre.org
+conda.io
+anaconda.com
+anaconda.org
+amsterdamumc.data.surf
+julialang-s3.julialang.org
+google.nl
+google.com
+surf.nl
+rclone.org
+ubuntu.com
+github.com
+githubassets.com
+git-scm.com
+githubusercontent.com
+gitlab.com
+packages.microsoft.com
+conda-forge.org
