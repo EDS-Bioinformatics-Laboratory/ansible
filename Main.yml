@@ -1,0 +1,59 @@
+---
+- name: Main orchestration playbook
+  hosts: all
+  vars_files:
+    - config.yml
+  remote_user: "{{ username }}"
+  become: yes
+  connection: local
+  gather_facts: false
+  
+  tasks:
+    - name: Run general playbook
+      ansible.builtin.include_tasks:
+        file: tasks/General.yml
+      when: run_general | default(true)
+      tags:
+        - general
+
+    - name: Run Conda playbook
+      ansible.builtin.include_tasks:
+        file: tasks/Conda.yml
+      when: run_Conda | default(true)
+      tags:
+        - Conda
+        
+   - name: Run Julia playbook
+      ansible.builtin.include_tasks:
+        file: tasks/general-VM.yml
+      when: run_Julia | default(true)
+      tags:
+        - julia
+
+   - name: Run Compilers playbook
+      ansible.builtin.include_tasks:
+        file: tasks/general-VM.yml
+      when: run_Compilers | default(true)
+      tags:
+        - compilers
+
+    - name: Run Xemacs playbook
+      ansible.builtin.include_tasks:
+        file: tasks/Xemacs.yml
+      when: run_Xemacs | default(true)
+      tags:
+        - Xemcs
+    
+    - name: Run R playbook
+      ansible.builtin.include_tasks:
+        file: tasks/R.yml
+      when: run_R | default(true)
+      tags:
+        - R
+        
+ - name: Run bashrc playbook
+      ansible.builtin.include_tasks:
+        file: tasks/Bashrc.yml
+      when: run_Bashrc | default(true)
+      tags:
+        - bashrc

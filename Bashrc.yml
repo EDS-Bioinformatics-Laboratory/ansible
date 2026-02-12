@@ -1,0 +1,54 @@
+---
+- name: Modify .bashrc (add aliases) 
+  hosts: all
+  vars_files:
+    - config.yml
+  remote_user: "{{ username }}"
+  become: yes
+  connection: local
+  gather_facts: false
+  
+  #vars:
+  #  remote_path: "RD:"
+  #  local_mount: "/home/antoine.vankampen@mydre.org/Desktop/RD"
+  #  root_path: "/home/antoine.vankampen@mydre.org"
+  
+  tasks:
+    - name: Add rclone mount alias to .bashrc
+      ansible.builtin.lineinfile:
+        path: "{{ root_path }}/.bashrc"
+        line: "alias rdmount='rclone mount --use-cookies --timeout 15m {{ remote_path }} {{ local_mount }} --vfs-cache-mode writes &'"
+        #regexp: "^alias {{ alias_name }}="
+        state: present
+        create: yes
+        backup: yes
+
+    - name: Add unmout alias to .bashrc
+      ansible.builtin.lineinfile:
+        path: "{{ root_path }}/.bashrc"
+        line: "alias rdumount='fusermount -u {{ local_mount }}'"
+        #regexp: "^alias {{ alias_name }}="
+        state: present
+        create: yes
+        backup: yes
+
+    - name: Add unmout alias to .bashrc
+      ansible.builtin.lineinfile:
+        path: "{{ root_path }}/.bashrc"
+        line: "alias h='history'"
+        #regexp: "^alias {{ alias_name }}="
+        state: present
+        create: yes
+        backup: yes
+
+    - name: Add alias to clone ansible repository
+      ansible.builtin.lineinfile:
+        path: "{{ root_path }}/.bashrc"
+        line: "alias aclone='git clone https://github.com/EDS-Bioinformatics-Laboratory/ansible.git'"
+        state: present
+        create: yes
+        backup: yes
+        
+    - name: Display success message
+      ansible.builtin.debug:
+        msg: "Aliases have been added to ~/.bashrc. Run 'source ~/.bashrc' or open a new terminal to use it."

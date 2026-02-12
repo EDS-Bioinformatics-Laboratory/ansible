@@ -1,0 +1,94 @@
+---
+- name: Install Conda, Python, and other packages
+  hosts: all
+  vars_files:
+    - config.yml
+  remote_user: "{{ username }}"
+  become: true
+  connection: local
+  
+  tasks:
+    - name: Add Conda repository
+      ansible.builtin.shell: bash /home/{{ username }}/ansible/scripts/download-conda.sh
+      args:
+        executable: /bin/bash
+
+    - name: Apt update after adding Conda repo
+      apt:
+        update_cache: yes
+
+    - name: Install Conda
+      apt:
+        name: "conda"
+        state: present
+        
+    - name: Install Python3 and pip
+      ansible.builtin.apt:
+        name:
+          - python3
+          - python3-pip
+          - python3-dev
+        state: present
+        update_cache: yes
+
+    - name: Upgrade pip to latest version
+      ansible.builtin.pip:
+        name: pip
+        state: latest
+        executable: pip3
+
+#    - name: Install numpy and pandas
+#      ansible.builtin.pip:
+#        name:
+#          - numpy
+#          - pandas
+#        state: present
+#        executable: pip3
+
+     - name: Install python packages
+       ansible.builtin.shell:
+         cmd: /opt/conda/bin/conda install -y numpy pandas
+       args:
+         executable: /bin/bash
+        
+    - name: Verify Python installation
+      ansible.builtin.command:
+        cmd: python3 --version
+      register: python_version
+      changed_when: false
+
+#    - name: Verify numpy installation
+#      ansible.builtin.command:
+#        cmd: python3 -c "import numpy; print(f'numpy {numpy.__version__}')"
+#      register: numpy_version
+#      changed_when: false
+
+#    - name: Verify pandas installation
+#      ansible.builtin.command:
+#        cmd: python3 -c "import pandas; print(f'pandas {pandas.__version__}')"
+#      register: pandas_version
+#      changed_when: false
+
+    - name: Display installation summary
+      ansible.builtin.debug:
+        msg:
+          - "Installation complete!"
+          - "{{ python_version.stdout }}"
+#          - "{{ numpy_version.stdout }}"
+#          - "{{ pandas_version.stdout }}"
+          
+    - name: Add Conda to bashrc
+      ansible.builtin.lineinfile:
+        dest: /home/{{ username }}/.bashrc
+        regexp: 'conda.sh'
+        line: 'source /opt/conda/etc/profile.d/conda.sh'
+        create: yes
+        state: present
+
+    - name: Activate conda in bashrc
+      ansible.builtin.lineinfile:
+        dest: /home/{{ username }}/.bashrc
+        regexp: 'conda activate base'
+        line: 'conda activate base'
+        create: yes
+        state: present
