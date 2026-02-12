@@ -61,3 +61,35 @@
       file:
         path: "/tmp/julia-{{ julia_version }}.tar.gz"
         state: absent
+
+## Install Julia updater
+    - name: Download juliaup installer
+      ansible.builtin.get_url:
+        url: https://install.julialang.org
+        dest: /tmp/juliaup-installer.sh
+        mode: '0755'
+
+    - name: Install juliaup
+      ansible.builtin.shell: |
+        /tmp/juliaup-installer.sh -y
+      args:
+        creates: "{{ root_path }}/.juliaup/bin/juliaup"
+      environment:
+        JULIAUP_INSTALL_DIR: "{{ root_path }}/.juliaup"
+
+    - name: Add juliaup to PATH in .bashrc
+      ansible.builtin.lineinfile:
+        path: "{{ root_path }}/.bashrc"
+        line: 'export PATH="$HOME/.juliaup/bin:$PATH"'
+        state: present
+        create: yes
+        backup: yes
+
+    - name: Clean up installer
+      ansible.builtin.file:
+        path: /tmp/juliaup-installer.sh
+        state: absent
+
+    - name: Display success message
+      ansible.builtin.debug:
+        msg: "juliaup has been installed. Run 'source ~/.bashrc' or open a new terminal to use it."
