@@ -48,7 +48,15 @@
         state: present
         create: yes
         backup: yes
-        
+ 
+    - name: Add alias for ls
+      ansible.builtin.lineinfile:
+        path: "{{ root_path }}/.bashrc"
+        line: "alias lsg='ls -ag'"
+        state: present
+        create: yes
+        backup: yes
+  
     - name: Display success message
       ansible.builtin.debug:
         msg: "Aliases have been added to ~/.bashrc. Run 'source ~/.bashrc' or open a new terminal to use it."
