@@ -11,6 +11,7 @@
     julia_major_minor: "1.12"
     julia_install_dir: "/opt/julia"
     julia_bin_link: "/usr/local/bin/julia"
+    juliaup_bin_link: "/opt/julia"
   
   tasks:
     - name: Install required dependencies
@@ -62,33 +63,37 @@
         path: "/tmp/julia-{{ julia_version }}.tar.gz"
         state: absent
 
-## Install Julia updater
     - name: Download juliaup installer
       ansible.builtin.get_url:
         url: https://install.julialang.org
         dest: /tmp/juliaup-installer.sh
         mode: '0755'
+      become: no
 
-    - name: Install juliaup
-      ansible.builtin.shell: |
-        /tmp/juliaup-installer.sh -y
+    - name: Run juliaup installer as user (not root)
+      ansible.builtin.shell:
+        cmd: bash /tmp/juliaup-installer.sh -y
       args:
         creates: "{{ root_path }}/.juliaup/bin/juliaup"
       environment:
-        JULIAUP_INSTALL_DIR: "{{ root_path }}/.juliaup"
+        HOME: "{{ root_path }}"
+        USER: "{{ username }}"
+      become: no
 
     - name: Add juliaup to PATH in .bashrc
       ansible.builtin.lineinfile:
         path: "{{ root_path }}/.bashrc"
         line: 'export PATH="$HOME/.juliaup/bin:$PATH"'
+        regexp: '^export PATH=.*\.juliaup/bin'
         state: present
         create: yes
         backup: yes
+      become: no
 
-    - name: Clean up installer
-      ansible.builtin.file:
-        path: /tmp/juliaup-installer.sh
-        state: absent
+#    - name: Clean up installer
+#      ansible.builtin.file:
+#        path: /tmp/juliaup-installer.sh
+#        state: absent
 
     - name: Display success message
       ansible.builtin.debug:
