@@ -1,0 +1,221 @@
+---
+- name: Install and configure Emacs with language packages
+  hosts: all
+  vars_files:
+    - config.yml
+  remote_user: "{{ username }}"
+  become: true
+  connection: local
+  
+  vars:
+    emacs_dir: "{{ ansible_env.HOME }}/.emacs.d"
+    background_color: "white"
+    foreground_color: "black"
+  
+  tasks:
+    - name: Install Emacs
+      ansible.builtin.apt:
+        name:
+          - emacs
+          - emacs-goodies-el
+        state: present
+        update_cache: yes
+      become: true
+
+    - name: Ensure .emacs.d directory exists
+      ansible.builtin.file:
+        path: "{{ emacs_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Create init.el with basic configuration
+      ansible.builtin.blockinfile:
+        path: "{{ emacs_dir }}/init.el"
+        marker: ";; {mark} ANSIBLE MANAGED BLOCK - Basic configuration"
+        block: |
+          ;; Basic Emacs configuration
+          
+          ;; Set up package repositories
+          (require 'package)
+          (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                                   ("gnu" . "https://elpa.gnu.org/packages/")))
+          (package-initialize)
+          
+          ;; Update package list if needed
+          (unless package-archive-contents
+            (package-refresh-contents))
+          
+          ;; Function to install packages if not already installed
+          (defun ensure-package-installed (&rest packages)
+            "Ensure every package is installed."
+            (mapcar
+             (lambda (package)
+               (unless (package-installed-p package)
+                 (package-install package)))
+             packages))
+        backup: yes
+        create: yes
+
+    - name: Configure color scheme
+      ansible.builtin.blockinfile:
+        path: "{{ emacs_dir }}/init.el"
+        marker: ";; {mark} ANSIBLE MANAGED BLOCK - Color scheme"
+        block: |
+          ;; Color scheme configuration
+          (set-background-color "{{ background_color }}")
+          (set-foreground-color "{{ foreground_color }}")
+          (set-cursor-color "red")
+          
+          ;; Improve visibility
+          (set-face-background 'mode-line "lightgray")
+          (set-face-foreground 'mode-line "black")
+          (set-face-background 'region "lightblue")
+          (set-face-foreground 'region "black")
+        backup: yes
+
+    - name: Install and configure YAML mode
+      ansible.builtin.blockinfile:
+        path: "{{ emacs_dir }}/init.el"
+        marker: ";; {mark} ANSIBLE MANAGED BLOCK - YAML mode"
+        block: |
+          ;; YAML mode
+          (ensure-package-installed 'yaml-mode)
+          (require 'yaml-mode)
+          (add-to-list 'auto-mode-alist '("\\.\\(yml\\|yaml\\)\\'" . yaml-mode))
+          (add-hook 'yaml-mode-hook
+            '(lambda ()
+               (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+        backup: yes
+
+    - name: Install and configure Python mode
+      ansible.builtin.blockinfile:
+        path: "{{ emacs_dir }}/init.el"
+        marker: ";; {mark} ANSIBLE MANAGED BLOCK - Python mode"
+        block: |
+          ;; Python mode
+          (ensure-package-installed 'python-mode 'elpy)
+          (require 'python-mode)
+          
+          ;; Elpy for enhanced Python support
+          (elpy-enable)
+          
+          ;; Python configuration
+          (add-hook 'python-mode-hook
+            '(lambda ()
+               (setq python-indent-offset 4)
+               (setq indent-tabs-mode nil)))
+        backup: yes
+
+    - name: Install and configure MATLAB mode
+      ansible.builtin.blockinfile:
+        path: "{{ emacs_dir }}/init.el"
+        marker: ";; {mark} ANSIBLE MANAGED BLOCK - MATLAB mode"
+        block: |
+          ;; MATLAB mode
+          (ensure-package-installed 'matlab-mode)
+          (require 'matlab-mode)
+          (add-to-list 'auto-mode-alist '("\\.m\\'" . matlab-mode))
+          
+          ;; MATLAB configuration
+          (setq matlab-indent-function t)
+          (setq matlab-shell-command "matlab")
+        backup: yes
+
+    - name: Install and configure R (ESS) mode
+      ansible.builtin.blockinfile:
+        path: "{{ emacs_dir }}/init.el"
+        marker: ";; {mark} ANSIBLE MANAGED BLOCK - R (ESS) mode"
+        block: |
+          ;; ESS (Emacs Speaks Statistics) for R
+          (ensure-package-installed 'ess)
+          (require 'ess-site)
+          
+          ;; R configuration
+          (add-hook 'ess-mode-hook
+            '(lambda ()
+               (setq ess-indent-offset 2)))
+        backup: yes
+
+    - name: Install and configure PHP mode
+      ansible.builtin.blockinfile:
+        path: "{{ emacs_dir }}/init.el"
+        marker: ";; {mark} ANSIBLE MANAGED BLOCK - PHP mode"
+        block: |
+          ;; PHP mode
+          (ensure-package-installed 'php-mode)
+          (require 'php-mode)
+          
+          ;; PHP configuration
+          (add-hook 'php-mode-hook
+            '(lambda ()
+               (setq c-basic-offset 4)
+               (setq indent-tabs-mode nil)))
+        backup: yes
+
+    - name: Add general editor improvements
+      ansible.builtin.blockinfile:
+        path: "{{ emacs_dir }}/init.el"
+        marker: ";; {mark} ANSIBLE MANAGED BLOCK - General improvements"
+        block: |
+          ;; General editor improvements
+          
+          ;; Show line numbers
+          (global-display-line-numbers-mode t)
+          
+          ;; Highlight matching parentheses
+          (show-paren-mode 1)
+          
+          ;; Enable column number mode
+          (column-number-mode 1)
+          
+          ;; Disable toolbar and menubar for cleaner interface (optional)
+          ;; (tool-bar-mode -1)
+          ;; (menu-bar-mode -1)
+          
+          ;; Auto-refresh buffers when files change on disk
+          (global-auto-revert-mode t)
+          
+          ;; Better scrolling
+          (setq scroll-conservatively 100)
+          
+          ;; Show trailing whitespace
+          (setq-default show-trailing-whitespace t)
+          
+          ;; Use spaces instead of tabs
+          (setq-default indent-tabs-mode nil)
+          
+          ;; Save backup files in a dedicated directory
+          (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+        backup: yes
+
+    - name: Create backups directory
+      ansible.builtin.file:
+        path: "{{ emacs_dir }}/backups"
+        state: directory
+        mode: '0755'
+
+    - name: Display success message
+      ansible.builtin.debug:
+        msg: |
+          Emacs installation and configuration complete!
+          
+          Configured packages:
+          - YAML mode (for .yml, .yaml files)
+          - Python mode with Elpy
+          - MATLAB mode (for .m files)
+          - ESS (for R programming)
+          - PHP mode (for .php files)
+          
+          Additional features:
+          - White background with black text
+          - Line numbers
+          - Syntax highlighting
+          - Auto-indentation
+          
+          Next steps:
+          1. Start Emacs: emacs
+          2. Packages will auto-install on first run
+          3. Wait for package installation to complete
+          
+          Note: The first time you start Emacs, it will download and install
+          all the packages from MELPA. This may take a few minutes.

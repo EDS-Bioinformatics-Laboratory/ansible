@@ -63,7 +63,7 @@ sudo ls
 ansible-playbook -i hosts -v General.yml
 ```
 
-General.yml will also create ~/Desktop/RD to which you can mount your Research Drive account (see below)
+General.yml will also create ~/Desktop/RD to which you can mount your Research Drive account (see below), and it will clone the ENCORE repository.
 
 ```
 ansible-playbook -i hosts -v Vscode.yml
@@ -80,8 +80,9 @@ ansible-playbook -i hosts -v Bashrc.yml
 ansible-playbook -i hosts -v Compilers.yml
 ansible-playbook -i hosts -v R.yml
 ansible-playbook -i hosts -v Julia.yml
-ansible-playbook -i hosts -v Containers
-ansible-playbook -i hosts -v Xemacs.yml
+ansible-playbook -i hosts -v Containers  # Apptainer and Docker
+ansible-playbook -i hosts -v Emacs.yml   # This should install packages but I don't think it works. 
+										 # However, these packages seem to already be built in into emacs
 ```
 
 ## Mount (SURF) Research Drive
