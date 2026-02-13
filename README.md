@@ -135,8 +135,9 @@ _Installs:_
 - Julia programming language version 1.12.4
 - juliaup  
 - Change the playbook to download another/latest version, or use  
-- _juliaup self update_ followed by _juliaup update_ to update to the latest version.  
-- Package manager does not work yet (Ticket submitted)
+    - _juliaup self update_ followed by 
+	- _juliaup update_ to update to the latest version.  
+- **Package manager does not work yet (Ticket submitted)**
 
 ```
 sudo ansible-playbook -i hosts -v Containers  
