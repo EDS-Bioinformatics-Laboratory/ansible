@@ -96,12 +96,12 @@ sudo ansible-playbook -i hosts -v Bashrc.yml
 source ~/.bashrc
 ```
 
-_Notes:_
--Aliases for rdmount and rdumount (i.e., (un)mounting Research Drive; first run _rclone config_; see below)
--Alias h=history
--Alias lsg=ls -ag
--Alias aclone to clone the ansible git repository
--Alias eclone to clone the ENCORE git repository
+_Notes:_  
+- Aliases for rdmount and rdumount (i.e., (un)mounting Research Drive; first run _rclone config_; see below)  
+- Alias h=history
+- Alias lsg=ls -ag
+- Alias aclone to clone the ansible git repository
+- Alias eclone to clone the ENCORE git repository
 
 ```
 sudo ansible-playbook -i hosts -v Bashrc.yml
