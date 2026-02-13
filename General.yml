@@ -40,7 +40,7 @@
       become: no
       tags: rd
 
-    - name: Clone ansible repository
+    - name: Clone ENCORE repository
       ansible.builtin.git:
         repo: https://github.com/EDS-Bioinformatics-Laboratory/ENCORE.git
         dest: "{{ root_path }}/ENCORE"

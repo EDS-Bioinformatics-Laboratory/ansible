@@ -43,12 +43,13 @@
         state: present
         update_cache: yes
 
-
-    - name: Verify VS Code installation
+    - name: Verify VSCode installation
       ansible.builtin.command:
         cmd: code --version
       register: vscode_version
       changed_when: false
+      become: true
+      become_user: "{{ username }}"
 
     - name: Display installation summary
       ansible.builtin.debug:
@@ -60,3 +61,19 @@
           - "  code"
           - "  code /path/to/folder"
           - "  code file.txt"
+
+# see https://stackoverflow.com/questions/78422507/vs-code-github-auth-not-working-on-linux-due-to-gnome-environment-os-keyring-err
+# Because the GNOME keyring, which is used to store credentials securely, is not available or is not running correctly
+
+    - name: Run apt update
+      apt:
+        update_cache: yes
+        
+    - name: Install dependencies
+      ansible.builtin.apt:
+        name:
+          - gnome-keyring
+          - libsecret-1-0
+          - libsecret-1-dev
+        state: present
+        update_cache: yes

@@ -4,17 +4,15 @@
   vars_files:
     - config.yml
   remote_user: "{{ username }}"
+  become: true
   connection: local
   vars:
     julia_version: "1.12.4"
     julia_major_minor: "1.12"
     julia_install_dir: "/opt/julia"
     julia_bin_link: "/usr/local/bin/julia"
-    actual_user: "{{ lookup('env', 'SUDO_USER') | default(username) }}"
-    julia_packages:
-      - Plots
-      - JSON
-
+    juliaup_bin_link: "/opt/julia"
+  
   tasks:
     - name: Install required dependencies
       apt:
@@ -24,21 +22,18 @@
           - ca-certificates
         state: present
         update_cache: yes
-      become: true
 
     - name: Create Julia installation directory
       file:
         path: "{{ julia_install_dir }}"
         state: directory
         mode: '0755'
-      become: true
 
     - name: Download Julia tarball
       get_url:
         url: "https://julialang-s3.julialang.org/bin/linux/x64/{{ julia_major_minor }}/julia-{{ julia_version }}-linux-x86_64.tar.gz"
         dest: "/tmp/julia-{{ julia_version }}.tar.gz"
         mode: '0644'
-      become: true
 
     - name: Extract Julia archive
       unarchive:
@@ -47,14 +42,12 @@
         remote_src: yes
         extra_opts: [--strip-components=1]
         creates: "{{ julia_install_dir }}/bin/julia"
-      become: true
 
     - name: Create symbolic link for Julia
       file:
         src: "{{ julia_install_dir }}/bin/julia"
         dest: "{{ julia_bin_link }}"
         state: link
-      become: true
 
     - name: Verify Julia installation
       command: julia --version
@@ -69,27 +62,24 @@
       file:
         path: "/tmp/julia-{{ julia_version }}.tar.gz"
         state: absent
-      become: true
 
     - name: Download juliaup installer
       ansible.builtin.get_url:
         url: https://install.julialang.org
         dest: /tmp/juliaup-installer.sh
         mode: '0755'
-      become: false
+      become: no
 
-    - name: Run juliaup installer as actual user
+    - name: Run juliaup installer as user (not root)
       ansible.builtin.shell:
-        cmd: bash /tmp/juliaup-installer.sh -y --background-selfupdate 0
+        cmd: bash /tmp/juliaup-installer.sh -y
       args:
         creates: "{{ root_path }}/.juliaup/bin/juliaup"
       environment:
         HOME: "{{ root_path }}"
-        USER: "{{ actual_user }}"
-        JULIAUP_BACKGROUND_SELFUPDATE: "0"
-      become: true
-      become_user: "{{ actual_user }}"
-      
+        USER: "{{ username }}"
+      become: no
+
     - name: Add juliaup to PATH in .bashrc
       ansible.builtin.lineinfile:
         path: "{{ root_path }}/.bashrc"
@@ -98,47 +88,13 @@
         state: present
         create: yes
         backup: yes
-      become: true
-      become_user: "{{ actual_user }}"
+      become: no
 
-    - name: Install Julia packages
-      ansible.builtin.shell:
-        cmd: |
-          julia -e 'using Pkg; Pkg.add("{{ item }}")'
-      loop: "{{ julia_packages }}"
-      environment:
-        HOME: "{{ root_path }}"
-        USER: "{{ actual_user }}"
-      become: true
-      become_user: "{{ actual_user }}"
-      register: pkg_install
-      changed_when: "'Installed' in pkg_install.stdout or 'Updating' in pkg_install.stdout"
-
-    - name: Verify installed Julia packages
-      ansible.builtin.shell:
-        cmd: |
-          julia -e 'using Pkg; Pkg.status()'
-      environment:
-        HOME: "{{ root_path }}"
-        USER: "{{ actual_user }}"
-      become: true
-      become_user: "{{ actual_user }}"
-      register: pkg_status
-      changed_when: false
-
-    - name: Display installed packages
-      ansible.builtin.debug:
-        msg: "{{ pkg_status.stdout_lines }}"
-
-    - name: Clean up installer
-      ansible.builtin.file:
-        path: /tmp/juliaup-installer.sh
-        state: absent
-      become: false
+#    - name: Clean up installer
+#      ansible.builtin.file:
+#        path: /tmp/juliaup-installer.sh
+#        state: absent
 
     - name: Display success message
       ansible.builtin.debug:
-        msg: 
-          - "juliaup and Julia packages have been installed!"
-          - "Installed packages: {{ julia_packages | join(', ') }}"
-          - "Run 'source ~/.bashrc' or open a new terminal to use juliaup."
+        msg: "juliaup has been installed. Run 'source ~/.bashrc' or open a new terminal to use it."

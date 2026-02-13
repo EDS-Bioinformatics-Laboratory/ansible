@@ -60,13 +60,13 @@ sudo ls # I think this is not necessary. Below, I execute with sudo where necess
 
 * Execute playbooks
 
-Note: in case you need to debug, you can start by using ``-vvv`` instead of ``-v``
+_Note:_ in case you need to debug, you can start by using ``-vvv`` instead of ``-v``
 
 ```
 ansible-playbook -i hosts -v General.yml
 ```
 
-General.yml will 
+_Installs:_ 
 - Install rclone and gedit
 - Create ~/Desktop/RD to which you can mount your Research Drive account (see below), 
 - Clone the ENCORE repository in ~/.
@@ -77,7 +77,7 @@ sudo ansible-playbook -i hosts -v Conda.yml  #might be necessary to run with sud
 source ~/.bashrc
 ```
 
-This will 
+_Installs:_
 - Install conda base environment
 - Install numpy, pandas, notebook 7 
 - Activata conda.
@@ -88,15 +88,20 @@ sudo ansible-playbook -i hosts -v Vscode.yml
 
 _Notes:_
 - VScode can run from the commandline: ``code &``
-- If you want to use the same extensions as you have on your Windows/MacOS, then enable syncrhonization in VSCode. Alternatively, install the extensions manually.
-- I did not manage to connect to my (paid) co-pilot account although I was logged in with my github account.
+- It will ask you to choose a password for new keyring
+- If you want to use the same extensions as you have on your Windows/MacOS, then enable syncrhonization in VSCode. Alternatively, install the extensions manually. To enable synchronization:
+	- go to Settings Sync (ctrl-shift-p)
+	- Click on Backup and Sync Settings
+	- Sign in to your github or microsoft account
+	- At this moment it does not seem to sync the extensions
+	- I did not manage to connect to my (paid) co-pilot account although I was logged in with my github account.
 
 ```
 sudo ansible-playbook -i hosts -v Bashrc.yml
 source ~/.bashrc
 ```
 
-_Notes:_  
+_Add the following to .bashrc_  
 - Aliases for rdmount and rdumount (i.e., (un)mounting Research Drive; first run _rclone config_; see below)  
 - Alias h=history
 - Alias lsg=ls -ag
@@ -104,11 +109,43 @@ _Notes:_
 - Alias eclone to clone the ENCORE git repository
 
 ```
-sudo ansible-playbook -i hosts -v Bashrc.yml
 sudo ansible-playbook -i hosts -v Compilers.yml
+```
+
+_Installs:_
+- gcc
+- g++
+- gfortran
+
+```
 sudo ansible-playbook -i hosts -v R.yml
+```
+
+_Installs:_
+- R 
+- RStudio
+- Rtools
+- Package: renv
+
+```
 sudo ansible-playbook -i hosts -v Julia.yml
-sudo ansible-playbook -i hosts -v Containers  # Apptainer and Docker
+```
+
+_Installs:_
+- Julia programming language version 1.12.4
+- juliaup
+- Change the playbook to download another/latest version, or use
+-- _juliaup self update_ followed by _juliaup update_ to update to the latest version.
+
+```
+sudo ansible-playbook -i hosts -v Containers  
+```
+
+_Installs:_
+- Apptainer and Docker
+- I didn't check if these are actually working
+
+```
 sudo ansible-playbook -i hosts -v Emacs.yml   # This should install packages but I don't think it works. 
 										      # However, these packages seem to already be built in into emacs
 ```
@@ -183,6 +220,10 @@ The following websites should be added to the myDre [External Access List](https
 
 I also provide the list here in case is magically disappears on myDre. Then just copy this list back into the External Access List..
 
+vscode-sync.trafficmanager.net
+vscode.dev
+gnu.org
+melpa.org
 docker.com   
 code.visualstudio.com  
 office.com  
