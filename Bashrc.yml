@@ -48,7 +48,15 @@
         state: present
         create: yes
         backup: yes
- 
+
+    - name: Add alias to clone ENCORE repository
+      ansible.builtin.lineinfile:
+        path: "{{ root_path }}/.bashrc"
+        line: "alias eclone='git clone https://github.com/EDS-Bioinformatics-Laboratory/ENCORE.git'"
+        state: present
+        create: yes
+        backup: yes
+
     - name: Add alias for ls
       ansible.builtin.lineinfile:
         path: "{{ root_path }}/.bashrc"

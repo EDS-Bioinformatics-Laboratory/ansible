@@ -41,6 +41,7 @@ sudo apt install ansible git
 * Clone the ansible repository
 
 ```
+cd ~ 
 git clone https://github.com/EDS-Bioinformatics-Laboratory/ansible.git
 cd ansible
 ```
@@ -54,35 +55,62 @@ cd ansible
 * Run a sudo command before you run ansible, otherwise the script can't do operations as root
 
 ```
-sudo ls
+sudo ls # I think this is not necessary. Below, I execute with sudo where necessary
 ```
 
 * Execute playbooks
+
+Note: in case you need to debug, you can start by using ``-vvv`` instead of ``-v``
 
 ```
 ansible-playbook -i hosts -v General.yml
 ```
 
-General.yml will also create ~/Desktop/RD to which you can mount your Research Drive account (see below), and it will clone the ENCORE repository.
+General.yml will 
+- Install rclone and gedit
+- Create ~/Desktop/RD to which you can mount your Research Drive account (see below), 
+- Clone the ENCORE repository in ~/.
+
 
 ```
-ansible-playbook -i hosts -v Vscode.yml
-ansible-playbook -i hosts -v Conda.yml  #might be necessary to run with sudo
+sudo ansible-playbook -i hosts -v Conda.yml  #might be necessary to run with sudo
 source ~/.bashrc
 ```
 
-This will activata conda.
-
-VScode can run from the commandline: ``code &``
+This will 
+- Install conda base environment
+- Install numpy, pandas, notebook 7 
+- Activata conda.
 
 ```
-ansible-playbook -i hosts -v Bashrc.yml
-ansible-playbook -i hosts -v Compilers.yml
-ansible-playbook -i hosts -v R.yml
-ansible-playbook -i hosts -v Julia.yml
-ansible-playbook -i hosts -v Containers  # Apptainer and Docker
-ansible-playbook -i hosts -v Emacs.yml   # This should install packages but I don't think it works. 
-										 # However, these packages seem to already be built in into emacs
+sudo ansible-playbook -i hosts -v Vscode.yml
+```
+
+_Notes:_
+- VScode can run from the commandline: ``code &``
+- If you want to use the same extensions as you have on your Windows/MacOS, then enable syncrhonization in VSCode. Alternatively, install the extensions manually.
+- I did not manage to connect to my (paid) co-pilot account although I was logged in with my github account.
+
+```
+sudo ansible-playbook -i hosts -v Bashrc.yml
+source ~/.bashrc
+```
+
+_Notes:_
+-Aliases for rdmount and rdumount (i.e., (un)mounting Research Drive; first run _rclone config_; see below)
+-Alias h=history
+-Alias lsg=ls -ag
+-Alias aclone to clone the ansible git repository
+-Alias eclone to clone the ENCORE git repository
+
+```
+sudo ansible-playbook -i hosts -v Bashrc.yml
+sudo ansible-playbook -i hosts -v Compilers.yml
+sudo ansible-playbook -i hosts -v R.yml
+sudo ansible-playbook -i hosts -v Julia.yml
+sudo ansible-playbook -i hosts -v Containers  # Apptainer and Docker
+sudo ansible-playbook -i hosts -v Emacs.yml   # This should install packages but I don't think it works. 
+										      # However, these packages seem to already be built in into emacs
 ```
 
 ## Mount (SURF) Research Drive
@@ -140,7 +168,12 @@ You can unmount this file system by:
 	
 **Note:** the ansible playbook bashrc will add rdmount and rdumount to .bashrc
 
-
+## **Troubleshooting**
+- With Vscode.yml and Conda.yml you may sometimes get an error like: ".......Conflicting values set for option 
+Signed-By regarding source https://packages.microsoft.com/repos/code .......". It is unclear why this happens. So 
+far I fixed this by deleting the files in /usr/share/keyring that were installed at the moment you executed the 
+ansible playbook. In addition, I deleted the _conda.list_ and/or _vscode.list_ and/or _vscode.sources_, and 
+_packages_microsfot_com_repost_code.list_. See also: [here](https://askubuntu.com/questions/1433368/how-to-solve-gpg-error-with-packages-microsoft-com-pubkey)
 
 ## **External Access list**
 

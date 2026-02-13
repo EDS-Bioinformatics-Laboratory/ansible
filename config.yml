@@ -1,16 +1,25 @@
 ---
 # User configuration
+#   Change to your own myDRE (!) username
 username: antoine.vankampen@mydre.org
+
+# Shared library for ALSA applications
+# ALSA is the Advanced Linux Sound Architecture.
+# This package contains the ALSA library and its standard plugins, as well
+# as the required configuration files.
 
 libasound: libasound2 # If libasound2 doesn't work, try libasound2t64
 
 # Rclone configuration
+#   Desktop/RD is the local directory that will be mounted to Research Drive
+#   RD: is the remote webdav connection
 remote_path: "RD:"
 local_mount: "/home/antoine.vankampen@mydre.org/Desktop/RD"
 root_path: "/home/antoine.vankampen@mydre.org"
 
-# Feature flags  (only add this if we want to configure it here, instead of command line)
+# Select the ansible playbooks you want to run
 run_General: true
+
 run_Vscode: true
 run_Conda: true
 run_Emacs: true

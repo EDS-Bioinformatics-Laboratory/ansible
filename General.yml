@@ -37,8 +37,8 @@
         path: "{{ root_path }}/Desktop/RD"
         state: directory
         mode: '0755'
-        become: no
-        tags: rd
+      become: no
+      tags: rd
 
     - name: Clone ansible repository
       ansible.builtin.git:

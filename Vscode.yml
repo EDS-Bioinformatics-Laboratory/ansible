@@ -1,15 +1,23 @@
 ---
-- name: Install a general virtual machine
+- name: Install VScode
   hosts: all
-  
   vars_files:
     - config.yml
   remote_user: "{{ username }}"
-  become: yes
+  become: true
   connection: local
   gather_facts: false
 
   tasks: 
+    - name: Install dependencies
+      ansible.builtin.apt:
+        name:
+          - wget
+          - gpg
+          - apt-transport-https
+        state: present
+        update_cache: yes
+  
     - name: Install several packages required for VScode
       ansible.builtin.apt:
         name:
@@ -18,19 +26,37 @@
           - xauth
         state: present
         
-    - name: Download Microsoft GPG key
-      ansible.builtin.get_url:
+    - name: Add Microsoft GPG key
+      ansible.builtin.apt_key:
         url: https://packages.microsoft.com/keys/microsoft.asc
-        dest: /usr/share/keyrings/microsoft.asc
-        mode: '0644'
+        state: present
 
     - name: Add VSCode repository
       ansible.builtin.apt_repository:
-        repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.asc] https://packages.microsoft.com/repos/code stable main"
+        repo: "deb [arch=amd64] https://packages.microsoft.com/repos/code stable main"
         state: present
+        filename: vscode
 
     - name: Install VSCode
       ansible.builtin.apt:
         name: code
         state: present
         update_cache: yes
+
+
+    - name: Verify VS Code installation
+      ansible.builtin.command:
+        cmd: code --version
+      register: vscode_version
+      changed_when: false
+
+    - name: Display installation summary
+      ansible.builtin.debug:
+        msg:
+          - "Visual Studio Code installed successfully!"
+          - "Version: {{ vscode_version.stdout_lines[0] }}"
+          - ""
+          - "To start VS Code:"
+          - "  code"
+          - "  code /path/to/folder"
+          - "  code file.txt"
