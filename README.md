@@ -20,9 +20,9 @@ The Ansible script assumes a virtual machine running Ubuntu. It might also work 
 
 ## Setting up an Ubuntu VM
 
-*Create a new VM on myDre
+* Create a new VM on myDre
 
-*Login to the VM using your myDRE account using RDP (X environment), or SSH  (terminal).
+* Login to the VM using your myDRE account using RDP (X environment), or SSH  (terminal).
 
 ```
 sudo apt update
@@ -48,24 +48,21 @@ git clone https://github.com/EDS-Bioinformatics-Laboratory/ansible.git
 cd ansible
 ```
 
-* Modify the configuration file ``config.yml``: e.g., change the username to your own myDre username.
+* Modify the configuration file ``config.yml``
+  * Change the username to your own **myDre** username.
+  * Change the _local_mount_ path 
+  * Change the _root_path_
+  * The selection tags do currently not work.
 
 
 
 ## Installation and configuration of software with Ansible
 
-* Run a sudo command before you run ansible, otherwise the script can't do operations as root
-
-  
-
-```
-sudo ls # I think this is not necessary. Below, I execute with sudo where necessary
-```
-
 * Execute playbooks
 
-_Note:_ in case you need to debug, you can start by using ``-vvv`` instead of ``-v``
-
+_Notes:_ 
+* In case you need to debug, you can start by using ``-vvv`` instead of ``-v``
+* All steps are mandatory unless indicated.
 
 
 ```
@@ -74,10 +71,10 @@ ansible-playbook -i hosts -v General.yml
 
 _This installed:_ 
 - Install rclone and gedit
-- Create ~/Desktop/RD to which you can mount your Research Drive account (see below), 
-- Clone the ENCORE repository in ~/.
 
-  
+General.yml created ~/Desktop/RD to which you can mount your Research Drive account (see below). The _local_mount_ in config.yml should point tho this directory. In addition, it cloned the ENCORE repository in ~/.
+
+_Note:_ at this point you can mount your Research Drive account following the instructions in the next section, or you can continue to first install software with the remaining playbooks. Mounting Research Drive at this point may help to easily transfer files and copy-paste (see below) in case you need to debug or change files.
 
 
 ```
@@ -93,7 +90,7 @@ _This installed:_
   
 
 ```
-sudo ansible-playbook -i hosts -v Vscode.yml
+sudo ansible-playbook -i hosts -v Vscode.yml    #OPTIONAL
 ```
 
 _Notes:_
@@ -129,7 +126,7 @@ _Add the following to .bashrc_
   
 
 ```
-sudo ansible-playbook -i hosts -v Compilers.yml
+sudo ansible-playbook -i hosts -v Compilers.yml   
 ```
 
 _This installed:_ 
@@ -138,7 +135,7 @@ _This installed:_
 - gfortran
 
 ```
-sudo ansible-playbook -i hosts -v R.yml
+sudo ansible-playbook -i hosts -v R.yml   #OPTIONAL
 ```
 
 _This installed:_ 
@@ -150,7 +147,7 @@ _This installed:_
   
 
 ```
-sudo ansible-playbook -i hosts -v Julia.yml
+sudo ansible-playbook -i hosts -v Julia.yml  #OPTIONAL
 ```
 
 _This installed:_ 
@@ -166,7 +163,7 @@ _This installed:_
     
 
 ```
-sudo ansible-playbook -i hosts -v Containers  
+sudo ansible-playbook -i hosts -v Containers   #OPTIONAL
 ```
 
 _This installed:_ 
@@ -175,7 +172,8 @@ _This installed:_
 - I didn't check if these are actually working
 
 ```
-sudo ansible-playbook -i hosts -v Emacs.yml   # This should install packages but I don't think it works. 
+sudo ansible-playbook -i hosts -v Emacs.yml   #OPTIONAL
+	                                          # This should install packages but I don't think it works. 
 										      # However, these packages seem to already be built in into emacs
 ```
 
@@ -204,6 +202,7 @@ _Configuration is stored in:_
 .config/rclone
 
 _Example commands_
+
 ```
 rclone ls RD:
 rclone copy /my/folder RD:my/destination/folder
@@ -234,6 +233,7 @@ You can unmount this file system by:
 	
 **Note:** the ansible playbook bashrc will add rdmount and rdumount to .bashrc
 
+
 ## **Copy-Paste workaround**
 It is not possible to copy-paste to and from myDre. One work around is to make use of the mounted Research Drive: just put a file copypaste.txt in the mounted directory (eg ~/Desktop/RD) and sync with your directory on Research Drive (eg. /Bioinformatics/myDre):
 
@@ -263,12 +263,12 @@ The following websites should be added to the myDre [External Access List](https
 
 I also provide the list here in case is magically disappears on myDre. Then just copy this list back into the External Access List..
 
-rstudio.org
-r-project.org
-vscode-sync.trafficmanager.net
-vscode.dev
-gnu.org
-melpa.org
+rstudio.org   
+r-project.org   
+vscode-sync.trafficmanager.net   
+vscode.dev   
+gnu.org   
+melpa.org   
 docker.com   
 code.visualstudio.com  
 office.com  
