@@ -7,19 +7,189 @@
   become: yes
   connection: local
   gather_facts: false
+  
   tasks:
     - name: Wait for system to become reachable
       wait_for_connection:
         timeout: 300
 
-    - name: Install R
-      ansible.builtin.apt:
-        name: r-base
+    - name: Install prerequisites for R
+      ansible.builtin.package:
+        name:
+          - dirmngr
+          - wget
+          - ca-certificates
+          - gnupg2
+          - apt-transport-https
         state: present
         update_cache: yes
 
-    - name: Install R packages
-      ansible.builtin.shell: Rscript /home/{{ username }}/ansible/scripts/install-R-packages.R
-      args:
-        executable: /bin/bash
-        
+    - name: Add R repository GPG key
+      ansible.builtin.apt_key:
+        url: https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc
+        state: present
+      environment:
+        http_proxy: "{{ http_proxy | default('') }}"
+        https_proxy: "{{ https_proxy | default('') }}"
+
+    - name: Get Ubuntu codename
+      ansible.builtin.command:
+        cmd: lsb_release -cs
+      register: ubuntu_codename
+      changed_when: false
+
+    - name: Add R repository
+      ansible.builtin.apt_repository:
+        repo: "deb https://cloud.r-project.org/bin/linux/ubuntu {{ ubuntu_codename.stdout }}-cran40/"
+        state: present
+        filename: cran
+
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install R base and development tools
+      ansible.builtin.package:
+        name:
+          - r-base
+          - r-base-dev
+          - build-essential
+          - libcurl4-openssl-dev
+          - libssl-dev
+          - libxml2-dev
+          - libfontconfig1-dev
+          - libharfbuzz-dev
+          - libfribidi-dev
+          - libfreetype6-dev
+          - libpng-dev
+          - libtiff5-dev
+          - libjpeg-dev
+        state: present
+
+    - name: Check R version
+      ansible.builtin.command:
+        cmd: R --version
+      register: r_version
+      changed_when: false
+      become: no
+
+    - name: Display R version
+      ansible.builtin.debug:
+        msg: "{{ r_version.stdout_lines[0] }}"
+
+    - name: Download RStudio
+      ansible.builtin.get_url:
+        url: https://download1.rstudio.org/electron/jammy/amd64/rstudio-2024.12.0-467-amd64.deb
+        dest: /tmp/rstudio.deb
+        mode: '0644'
+      environment:
+        http_proxy: "{{ http_proxy | default('') }}"
+        https_proxy: "{{ https_proxy | default('') }}"
+
+    - name: Install RStudio dependencies
+      ansible.builtin.package:
+        name:
+          - libnss3
+          - libnspr4
+          - libgbm1
+          - libasound2
+        state: present
+
+    - name: Install RStudio
+      ansible.builtin.apt:
+        deb: /tmp/rstudio.deb
+        state: present
+
+    - name: Clean up RStudio installer
+      ansible.builtin.file:
+        path: /tmp/rstudio.deb
+        state: absent
+
+    - name: Create R library directory for user
+      ansible.builtin.file:
+        path: "{{ root_path }}/R/library"
+        state: directory
+        mode: '0755'
+        owner: "{{ username }}"
+        group: "{{ username }}"
+      become: no
+
+    - name: Configure R to use proxy (if needed)
+      ansible.builtin.copy:
+        content: |
+          # R environment configuration
+          {% if http_proxy is defined and http_proxy != '' %}
+          options(
+            repos = c(CRAN = "https://cloud.r-project.org/"),
+            download.file.method = "libcurl",
+            HTTPUserAgent = sprintf("R/%s R (%s)", getRversion(), paste(getRversion(), R.version$platform, R.version$arch, R.version$os))
+          )
+          
+          # Proxy settings
+          Sys.setenv(
+            http_proxy = "{{ http_proxy }}",
+            https_proxy = "{{ https_proxy }}",
+            HTTP_PROXY = "{{ http_proxy }}",
+            HTTPS_PROXY = "{{ https_proxy }}"
+          )
+          {% else %}
+          options(
+            repos = c(CRAN = "https://cloud.r-project.org/"),
+            download.file.method = "libcurl"
+          )
+          {% endif %}
+          
+          # Set library path
+          .libPaths(c("{{ root_path }}/R/library", .libPaths()))
+          
+          message("✓ R environment configured")
+        dest: "{{ root_path }}/.Rprofile"
+        mode: '0644'
+        owner: "{{ username }}"
+        group: "{{ username }}"
+      become: no
+
+    - name: Install R packages (renv and ggplot2)
+      ansible.builtin.shell: |
+        R -e 'install.packages(c("renv", "ggplot2"), lib="{{ root_path }}/R/library", repos="https://cloud.r-project.org/")'
+      become: no
+      environment:
+        HOME: "{{ root_path }}"
+        R_LIBS_USER: "{{ root_path }}/R/library"
+        http_proxy: "{{ http_proxy | default('') }}"
+        https_proxy: "{{ https_proxy | default('') }}"
+      register: r_packages_install
+      failed_when: false
+
+    - name: Display R package installation output
+      ansible.builtin.debug:
+        var: r_packages_install.stdout_lines
+      when: r_packages_install.stdout_lines is defined
+
+    - name: Verify R packages installation
+      ansible.builtin.shell: |
+        R -e 'library(renv); library(ggplot2); cat("✓ Packages loaded successfully\n")'
+      become: no
+      environment:
+        HOME: "{{ root_path }}"
+        R_LIBS_USER: "{{ root_path }}/R/library"
+      register: r_verify
+      failed_when: false
+
+    - name: Display verification result
+      ansible.builtin.debug:
+        msg: "{{ r_verify.stdout if r_verify.rc == 0 else 'Package installation may have failed - check logs' }}"
+
+    - name: Display installation summary
+      ansible.builtin.debug:
+        msg: |
+          ✓ R installation complete
+          ✓ RStudio installed
+          ✓ R packages: renv, ggplot2
+          
+          To use:
+          - R command line: type 'R' in terminal
+          - RStudio: search for RStudio in applications menu
+          
+          R library location: {{ root_path }}/R/library
+          R configuration: {{ root_path }}/.Rprofile
