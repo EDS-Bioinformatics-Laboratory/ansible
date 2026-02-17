@@ -1,5 +1,5 @@
 ---
-- name: Install a general virtual machine
+- name: Install R, Rstudio, Rtools, and example packages
   hosts: all
   vars_files:
     - config.yml
@@ -9,28 +9,67 @@
   gather_facts: false
   
   tasks:
-    - name: Wait for system to become reachable
-      wait_for_connection:
-        timeout: 300
-
     - name: Install prerequisites for R
       ansible.builtin.package:
         name:
+          - software-properties-common
           - dirmngr
           - wget
           - ca-certificates
           - gnupg2
           - apt-transport-https
+          - curl
         state: present
         update_cache: yes
 
-    - name: Add R repository GPG key
-      ansible.builtin.apt_key:
-        url: https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc
-        state: present
+    - name: Remove old R GPG key if exists
+      ansible.builtin.file:
+        path: /usr/share/keyrings/r-project.gpg
+        state: absent
+
+    - name: Download R repository GPG key to temp file
+      ansible.builtin.shell: |
+        wget -e use_proxy=yes \
+             -e http_proxy="{{ http_proxy }}" \
+             -e https_proxy="{{ https_proxy }}" \
+             -O /tmp/r-key.asc \
+             https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc
+      args:
+        creates: /tmp/r-key.asc
       environment:
         http_proxy: "{{ http_proxy | default('') }}"
         https_proxy: "{{ https_proxy | default('') }}"
+      register: wget_result
+
+    - name: Verify key was downloaded
+      ansible.builtin.stat:
+        path: /tmp/r-key.asc
+      register: key_file
+
+    - name: Display download status
+      ansible.builtin.debug:
+        msg: "Key downloaded: {{ key_file.stat.exists }}, Size: {{ key_file.stat.size | default('N/A') }}"
+
+    - name: Convert GPG key to binary format
+      ansible.builtin.shell: |
+        cat /tmp/r-key.asc | gpg --dearmor -o /usr/share/keyrings/r-project.gpg
+        chmod 644 /usr/share/keyrings/r-project.gpg
+      when: key_file.stat.exists
+      register: gpg_result
+
+    - name: Verify GPG key was created
+      ansible.builtin.stat:
+        path: /usr/share/keyrings/r-project.gpg
+      register: gpg_key
+
+    - name: Display GPG key status
+      ansible.builtin.debug:
+        msg: "GPG key created: {{ gpg_key.stat.exists }}, Size: {{ gpg_key.stat.size | default('N/A') }}"
+
+    - name: Clean up temporary key file
+      ansible.builtin.file:
+        path: /tmp/r-key.asc
+        state: absent
 
     - name: Get Ubuntu codename
       ansible.builtin.command:
@@ -38,15 +77,21 @@
       register: ubuntu_codename
       changed_when: false
 
-    - name: Add R repository
-      ansible.builtin.apt_repository:
-        repo: "deb https://cloud.r-project.org/bin/linux/ubuntu {{ ubuntu_codename.stdout }}-cran40/"
-        state: present
-        filename: cran
+    - name: Add R repository with signed-by
+      ansible.builtin.copy:
+        content: |
+          deb [signed-by=/usr/share/keyrings/r-project.gpg] https://cloud.r-project.org/bin/linux/ubuntu {{ ubuntu_codename.stdout }}-cran40/
+        dest: /etc/apt/sources.list.d/cran.list
+        mode: '0644'
+      when: gpg_key.stat.exists
 
     - name: Update apt cache
       ansible.builtin.apt:
         update_cache: yes
+      environment:
+        http_proxy: "{{ http_proxy | default('') }}"
+        https_proxy: "{{ https_proxy | default('') }}"
+      when: gpg_key.stat.exists
 
     - name: Install R base and development tools
       ansible.builtin.package:
@@ -110,8 +155,6 @@
         path: "{{ root_path }}/R/library"
         state: directory
         mode: '0755'
-        owner: "{{ username }}"
-        group: "{{ username }}"
       become: no
 
     - name: Configure R to use proxy (if needed)
@@ -145,8 +188,6 @@
           message("✓ R environment configured")
         dest: "{{ root_path }}/.Rprofile"
         mode: '0644'
-        owner: "{{ username }}"
-        group: "{{ username }}"
       become: no
 
     - name: Install R packages (renv and ggplot2)

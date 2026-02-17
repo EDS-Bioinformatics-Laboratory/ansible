@@ -20,23 +20,25 @@ The Ansible script assumes a virtual machine running Ubuntu. It might also work 
 
 ## Setting up an Ubuntu VM
 
-* Create a new VM on myDre
+*Create a new VM on myDre
 
-* Login to the VM using your myDRE account using RDP (X environment, or SSH  (terminal).
+*Login to the VM using your myDRE account using RDP (X environment), or SSH  (terminal).
 
 ```
 sudo apt update
 sudo apt upgrade 
 ```
 
-* Stop and restart the VM, and login again.
-
-* Install Ansible and Git.
+- Stop and restart the VM, and login again.
 
 ```
 sudo apt install software-properties-common
 sudo apt install ansible git
 ```
+
+_This installed:_ 
+- ansible
+- git
 
 * Clone the ansible repository
 
@@ -54,6 +56,8 @@ cd ansible
 
 * Run a sudo command before you run ansible, otherwise the script can't do operations as root
 
+  
+
 ```
 sudo ls # I think this is not necessary. Below, I execute with sudo where necessary
 ```
@@ -62,14 +66,18 @@ sudo ls # I think this is not necessary. Below, I execute with sudo where necess
 
 _Note:_ in case you need to debug, you can start by using ``-vvv`` instead of ``-v``
 
+
+
 ```
 ansible-playbook -i hosts -v General.yml
 ```
 
-_Installs:_ 
+_This installed:_ 
 - Install rclone and gedit
 - Create ~/Desktop/RD to which you can mount your Research Drive account (see below), 
 - Clone the ENCORE repository in ~/.
+
+  
 
 
 ```
@@ -77,10 +85,12 @@ sudo ansible-playbook -i hosts -v Conda.yml  #might be necessary to run with sud
 source ~/.bashrc
 ```
 
-_Installs:_
+_This installed:_ 
 - Install conda base environment
 - Install numpy, pandas, notebook 7 
 - Activata conda.
+
+  
 
 ```
 sudo ansible-playbook -i hosts -v Vscode.yml
@@ -88,13 +98,21 @@ sudo ansible-playbook -i hosts -v Vscode.yml
 
 _Notes:_
 - VScode can run from the commandline: ``code &``
+
 - It will ask you to choose a password for new keyring
+
 - If you want to use the same extensions as you have on your Windows/MacOS, then enable syncrhonization in VSCode. Alternatively, install the extensions manually. To enable synchronization:
 	- go to Settings Sync (ctrl-shift-p)
+	
 	- Click on Backup and Sync Settings
+	
 	- Sign in to your github or microsoft account
+	
 	- At this moment it does not seem to sync the extensions
+	
 	- I did not manage to connect to my (paid) co-pilot account although I was logged in with my github account.
+	
+	  
 
 ```
 sudo ansible-playbook -i hosts -v Bashrc.yml
@@ -108,11 +126,13 @@ _Add the following to .bashrc_
 - Alias aclone to clone the ansible git repository
 - Alias eclone to clone the ENCORE git repository
 
+  
+
 ```
 sudo ansible-playbook -i hosts -v Compilers.yml
 ```
 
-_Installs:_
+_This installed:_ 
 - gcc
 - g++
 - gfortran
@@ -121,30 +141,37 @@ _Installs:_
 sudo ansible-playbook -i hosts -v R.yml
 ```
 
-_Installs:_
+_This installed:_ 
 - R 
 - RStudio
 - Rtools
-- Package: renv
+- Packages: renv, ggplot
+
+  
 
 ```
 sudo ansible-playbook -i hosts -v Julia.yml
 ```
 
-_Installs:_
+_This installed:_ 
 - Julia programming language version 1.12.4
 - juliaup  
+
 - Change the playbook to download another/latest version, or use  
     - _juliaup self update_ followed by 
 	- _juliaup update_ to update to the latest version.  
+	
 - **Package manager does not work yet (Ticket submitted)**
+
+    
 
 ```
 sudo ansible-playbook -i hosts -v Containers  
 ```
 
-_Installs:_
+_This installed:_ 
 - Apptainer and Docker
+
 - I didn't check if these are actually working
 
 ```
@@ -207,6 +234,20 @@ You can unmount this file system by:
 	
 **Note:** the ansible playbook bashrc will add rdmount and rdumount to .bashrc
 
+## **Copy-Paste workaround**
+It is not possible to copy-paste to and from myDre. One work around is to make use of the mounted Research Drive: just put a file copypaste.txt in the mounted directory (eg ~/Desktop/RD) and sync with your directory on Research Drive (eg. /Bioinformatics/myDre):
+
+```
+cd ~/Desktop/RD
+rclone sync RD:/Bioinformatics/myDre .
+```
+
+or vice versa
+
+```
+rclone sync . RD:/Bioinformatics/myDre
+```
+
 ## **Troubleshooting**
 - With Vscode.yml and Conda.yml you may sometimes get an error like: ".......Conflicting values set for option 
 Signed-By regarding source https://packages.microsoft.com/repos/code .......". It is unclear why this happens. So 
@@ -222,6 +263,8 @@ The following websites should be added to the myDre [External Access List](https
 
 I also provide the list here in case is magically disappears on myDre. Then just copy this list back into the External Access List..
 
+rstudio.org
+r-project.org
 vscode-sync.trafficmanager.net
 vscode.dev
 gnu.org
