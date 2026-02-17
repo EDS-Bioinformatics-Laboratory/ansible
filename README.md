@@ -78,7 +78,7 @@ _Note:_ at this point you can mount your Research Drive account following the in
 
 
 ```
-sudo ansible-playbook -i hosts -v Conda.yml  #might be necessary to run with sudo
+sudo ansible-playbook -i hosts -v Conda.yml  
 source ~/.bashrc
 ```
 
@@ -148,6 +148,7 @@ _This installed:_
 
 ```
 sudo ansible-playbook -i hosts -v Julia.yml  #OPTIONAL
+source ~/.bashrc
 ```
 
 _This installed:_ 
@@ -158,7 +159,7 @@ _This installed:_
     - _juliaup self update_ followed by 
 	- _juliaup update_ to update to the latest version.  
 	
-- **Package manager does not work yet (Ticket submitted)**
+- **Package manager does not work yet (Ticket submitted). Therefore, script gives still error. Same from REPL**
 
     
 
