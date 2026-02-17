@@ -144,7 +144,7 @@ _This installed:_
 - Rtools
 - Packages: renv, ggplot
 
-  
+  _Note_: starting Rstudio will detect a newer version. Trying to install will also give a proxy error in the browser. Probably, same issue as with julia.
 
 ```
 sudo ansible-playbook -i hosts -v Julia.yml  #OPTIONAL
