@@ -164,7 +164,7 @@ _This installed:_
     
 
 ```
-sudo ansible-playbook -i hosts -v Containers   #OPTIONAL
+sudo ansible-playbook -i hosts -v Containers.yml   #OPTIONAL
 ```
 
 _This installed:_ 
