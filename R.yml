@@ -124,7 +124,7 @@
 
     - name: Download RStudio
       ansible.builtin.get_url:
-        url: https://download1.rstudio.org/electron/jammy/amd64/rstudio-2024.12.0-467-amd64.deb
+        url: https://download1.rstudio.org/electron/jammy/amd64/rstudio-2026.01.1-403-amd64.deb
         dest: /tmp/rstudio.deb
         mode: '0644'
       environment:
