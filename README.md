@@ -117,7 +117,7 @@ sudo ansible-playbook -i hosts -v Bashrc.yml
 source ~/.bashrc
 ```
 
-_Add the following to .bashrc_  
+_This added the following to .bashrc_  
 - Aliases for rdmount and rdumount (i.e., (un)mounting Research Drive; first run _rclone config_; see below)  
 - Alias h=history
 - Alias lsg=ls -ag
