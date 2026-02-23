@@ -145,7 +145,8 @@ _This installed:_
 - Rtools
 - Packages: renv, ggplot
 
-  _Note_: starting Rstudio will detect a newer version. Trying to install will also give a proxy error in the browser. Probably, same issue as with julia.
+  _Note_: starting Rstudio might detect a newer version as the to be installed version has now been hardcoded). One should be able to download and install a newer version via the browser and then execute 'sudo apt install <rstudio-XXX-amd64>.deb' in the terminal.  
+  _Note_: One can use the 'R_only.yml' or 'RStudio.yml' to seperately install these tools or when installation of one fails, because a newer version has already been detected (fx. if the RStudio installation has already been updated manually)  
 
 ```
 sudo ansible-playbook -i hosts -v Julia.yml  #OPTIONAL
@@ -160,7 +161,8 @@ _This installed:_
     - _juliaup self update_ followed by 
 	- _juliaup update_ to update to the latest version.  
 	
-- **Package manager does not work yet (Ticket submitted). Therefore, script gives still error. Same from REPL**
+- **Package manager does not work yet (Ticket submitted). Therefore, script gives still error. Same from REPL**  
+  _Note_: This should now have been solved by setting the environment variable JULIA_PKG_SERVER=""   
 
     
 
