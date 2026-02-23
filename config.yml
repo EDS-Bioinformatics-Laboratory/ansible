@@ -29,8 +29,8 @@ run_General: true
 run_Vscode: true
 run_Conda: true
 run_Emacs: true
-run_run_Julia: true
-run_run_Containers: true
+run_Julia: true
+run_Containers: true
 run_Compilers: true
 run_R: true
 run_Bashrc: true
