@@ -1,6 +1,6 @@
 # Setup default myDre VM 
 
-Repository for installation of frequently used software on empty virtual machines (VM) on myDRE. This might also work on SURF Research Cloud but has not been tested yet.
+Repository for installation of frequently used software on empty virtual machines (VM) on myDRE. This might also work on SURF Research Cloud but has not been tested yet.d
 
 Developed by:
 
@@ -197,7 +197,7 @@ sudo apt install rclone
 ```
 
 _Connect to your Research Drive account_ 
-See: [SURF Wiki](https://servicedesk.surf.nl/wiki/spaces/WIKI/pages/117179081/RD+How+to+use+Rclone+with+Research+Drive) for more information on how to configure Rclone and use it to [mount](https://servicedesk.surf.nl/wiki/spaces/WIKI/pages/117179081/RD+How+to+use+Rclone+with+Research+Drive#RD:HowtouseRclonewithResearchDrive-UseRclonetomountfilesystemsinuserspace) your Research drive
+See: [SURF Wiki](https://servicedesk.surf.nl/wiki/spaces/WIKI/pages/117179081/RD+How+to+use+Rclone+with+Research+Drive) for more information on how to configure Rclone and use it to [mount](https://servicedesk.surf.nl/wiki/spaces/WIKI/pages/117179081/RD+How+to+use+Rclone+with+Research+Drive#RD:HowtouseRclonewithResearchDrive-UseRclonetomountfilesystemsinuserspace) your Research Drive.
 
 _Webdav URL (example):_ 
 https://amsterdamumc.data.surf.nl/remote.php/dav/files/a.h.vankampen@amsterdamumc.nl
