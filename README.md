@@ -70,7 +70,8 @@ ansible-playbook -i hosts -v General.yml
 ```
 
 _This installed:_ 
-- Install rclone and gedit
+- rclone
+- gedit
 
 General.yml created ~/Desktop/RD to which you can mount your Research Drive account (see below). The _local_mount_ in config.yml should point tho this directory. In addition, it cloned the ENCORE repository in ~/.
 
@@ -83,9 +84,9 @@ source ~/.bashrc
 ```
 
 _This installed:_ 
-- Install conda base environment
-- Install numpy, pandas, notebook 7 
-- Activata conda.
+- conda base environment
+- numpy, pandas, notebook 7 
+- and activated conda
 
   
 
@@ -194,7 +195,7 @@ sudo apt install rclone
 ```
 
 _Connect to your Research Drive account_ 
-See: [SURF Wiki](https://servicedesk.surf.nl/wiki/spaces/WIKI/pages/117179081/RD+How+to+use+Rclone+with+Research+Drive) for more information to configure Rclone and use it to [mount](https://servicedesk.surf.nl/wiki/spaces/WIKI/pages/117179081/RD+How+to+use+Rclone+with+Research+Drive#RD:HowtouseRclonewithResearchDrive-UseRclonetomountfilesystemsinuserspace) your Research drive
+See: [SURF Wiki](https://servicedesk.surf.nl/wiki/spaces/WIKI/pages/117179081/RD+How+to+use+Rclone+with+Research+Drive) for more information on how to configure Rclone and use it to [mount](https://servicedesk.surf.nl/wiki/spaces/WIKI/pages/117179081/RD+How+to+use+Rclone+with+Research+Drive#RD:HowtouseRclonewithResearchDrive-UseRclonetomountfilesystemsinuserspace) your Research drive
 
 _Webdav URL (example):_ 
 https://amsterdamumc.data.surf.nl/remote.php/dav/files/a.h.vankampen@amsterdamumc.nl
