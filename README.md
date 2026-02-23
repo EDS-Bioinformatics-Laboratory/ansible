@@ -145,8 +145,8 @@ _This installed:_
 - Rtools
 - Packages: renv, ggplot
 
-  _Note_: starting Rstudio might detect a newer version as the to be installed version has now been hardcoded). One should be able to download and install a newer version via the browser and then execute 'sudo apt install <rstudio-XXX-amd64>.deb' in the terminal.  
-  _Note_: One can use the 'R_only.yml' or 'RStudio.yml' to seperately install these tools or when installation of one fails, because a newer version has already been detected (fx. if the RStudio installation has already been updated manually)  
+  _Note_: when starting RStudio you may get a pop up that a newer version is available, since the version to be installed has now been hardcoded. You should be able to download a newer version via the browser and then install it with 'sudo apt install <rstudio-XXX-amd64>.deb' in the terminal.  
+  _Note_: One can use the 'R_only.yml' and 'RStudio.yml' to seperately install these tools. This is also convenient when installation of one of them fails, for example because a newer version has been detected (fx. if the RStudio installation has already been updated manually).  
 
 ```
 sudo ansible-playbook -i hosts -v Julia.yml  #OPTIONAL
