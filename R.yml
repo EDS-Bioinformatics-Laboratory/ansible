@@ -150,12 +150,26 @@
         path: /tmp/rstudio.deb
         state: absent
 
+- name: Set library, configure and install packages for the user
+  hosts: all
+  vars_files:
+    - config.yml
+  remote_user: "{{ username }}"
+  vars:
+    actual_user: "{{ lookup('env', 'SUDO_USER') | default((username) }}"
+  become: true
+  become_user: "{{ actual_user }}"
+  connection: local
+  gather_facts: false
+
+  tasks:
     - name: Create R library directory for user
       ansible.builtin.file:
         path: "{{ root_path }}/R/library"
         state: directory
         mode: '0755'
-      become: no
+      become: true
+      become_user: "{{ actual_user }}"
 
     - name: Configure R to use proxy (if needed)
       ansible.builtin.copy:
@@ -188,7 +202,8 @@
           message("✓ R environment configured")
         dest: "{{ root_path }}/.Rprofile"
         mode: '0644'
-      become: no
+      become: true
+      become_user: "{{ actual_user }}"
 
     - name: Install R packages (renv and ggplot2)
       ansible.builtin.shell: |
