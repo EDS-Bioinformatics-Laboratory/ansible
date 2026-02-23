@@ -12,7 +12,7 @@
     - name: Run general playbook
       ansible.builtin.include_tasks:
         file: tasks/General.yml
-      when: run_general | default(true)
+      when: run_General | default(true)
       tags:
         - general
 
