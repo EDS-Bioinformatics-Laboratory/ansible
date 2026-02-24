@@ -148,8 +148,9 @@ _This installed:_
 - Rtools
 - Packages: renv, ggplot
 
-  _Note_: when starting RStudio you may get a pop up that a newer version is available, since the version to be installed has now been hardcoded. You should be able to download a newer version via the browser and then install it with 'sudo apt install <rstudio-XXX-amd64>.deb' in the terminal.  
-  _Note_: One can use the 'R_only.yml' and 'RStudio.yml' to seperately install these tools. This is also convenient when installation of one of them fails, for example because a newer version has been detected (fx. if the RStudio installation has already been updated manually).  
+_Notes:_
+- When starting RStudio you may get a pop up that a newer version is available, since the version to be installed has now been hardcoded. You should be able to download a newer version via the browser and then install it with 'sudo apt install <rstudio-XXX-amd64>.deb' in the terminal.  
+- One can use the 'R_only.yml' and 'RStudio.yml' to seperately install these tools. This is also convenient when installation of one of them fails, for example because a newer version has been detected (e.g., if the RStudio installation has already been updated manually).  
 
 ```
 sudo ansible-playbook -i hosts -v Julia.yml  #OPTIONAL
@@ -230,7 +231,7 @@ If my/destination/folder doesn’t exist, it is created and the contents of /my/
 _Use Rclone to mount file systems in user space_
 Using Rclone to mount a file system in user space is done as follows:
 
-`rclone mount --use-cookies --timeout 15m RD: /path/to/local/mount`--vfs-cache-mode writes
+`rclone mount --use-cookies --timeout 15m RD: /path/to/local/mount --vfs-cache-mode writes'
 
 The flag `--use-cookies` is needed, to get you always on the same Research Drive back-end, to prevent file lock between back-ends. The timeout flag is useful for uploading large files, we recommend using a timeout of 10 minutes per gigabyte of the largest source file. The last part --vfs-cache-mode writes allows applications to write data to the mount.
 
