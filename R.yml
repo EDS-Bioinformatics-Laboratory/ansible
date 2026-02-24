@@ -156,7 +156,7 @@
     - config.yml
   remote_user: "{{ username }}"
   vars:
-    actual_user: "{{ lookup('env', 'SUDO_USER') | default((username) }}"
+    actual_user: "{{ lookup('env', 'SUDO_USER') | default(username) }}"
   become: true
   become_user: "{{ actual_user }}"
   connection: local
