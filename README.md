@@ -227,9 +227,9 @@ If my/destination/folder doesn’t exist, it is created and the contents of /my/
 _Use Rclone to mount file systems in user space_
 Using Rclone to mount a file system in user space is done as follows:
 
-`rclone mount --use-cookies --timeout 15m RD: /path/to/local/mount`
+`rclone mount --use-cookies --timeout 15m RD: /path/to/local/mount`--vfs-cache-mode writes
 
-The flag `--use-cookies` is needed, to get you always on the same Research Drive back-end, to prevent file lock between back-ends. The timeout flag is useful for uploading large files, we recommend using a timeout of 10 minutes per gigabyte of the largest source file.
+The flag `--use-cookies` is needed, to get you always on the same Research Drive back-end, to prevent file lock between back-ends. The timeout flag is useful for uploading large files, we recommend using a timeout of 10 minutes per gigabyte of the largest source file. The last part --vfs-cache-mode writes allows applications to write data to the mount.
 
 You can unmount this file system by:
 
