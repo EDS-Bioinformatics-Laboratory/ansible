@@ -24,6 +24,8 @@ The Ansible script assumes a virtual machine running Ubuntu. It might also work 
 
 * Login to the VM using your myDRE account using RDP (X environment), or SSH  (terminal).
 
+* In the next step only do 'upgrade' if you are using Ubuntu version 22. Currently, you cannot upgrade Ubuntu 24.
+
 ```
 sudo apt update
 sudo apt upgrade 
@@ -64,6 +66,7 @@ _Notes:_
 * In case you need to debug, you can start by using ``-vvv`` instead of ``-v``
 * All steps are mandatory unless indicated.
 
+Execute General.yml WITHOUT using sudo!
 
 ```
 ansible-playbook -i hosts -v General.yml
