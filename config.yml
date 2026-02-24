@@ -20,7 +20,7 @@ root_path: "/home/antoine.vankampen@mydre.org"
 
 #proxy configuration - Azure VM proxy (used for installation of R/Rstudio/Rtools)
 http_proxy: "http://11.5.0.4:3128"
-https_proxy: "https://11.5.0.4:3128"
+https_proxy: "http://11.5.0.4:3128"
 ftp_proxy: "http://11.5.0.4:3128"
 no_proxy: "localhost,127.0.0.1,169.254.169.254,10.0.0.0/24,file.core.windows.net,blob.core.windows.net,management.core.windows.net,management.azure.com,::1"
 
