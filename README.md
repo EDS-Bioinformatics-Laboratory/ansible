@@ -20,7 +20,7 @@ The Ansible script assumes a virtual machine running Ubuntu. It might also work 
 
 ## Setting up an Ubuntu VM
 
-* Create a new VM on myDre
+* Create a new Ubuntu v22 VM on myDre (warning: Ubuntu 24 does not work)
 
 * Login to the VM using your myDRE account using RDP (X environment), or SSH  (terminal).
 
@@ -57,7 +57,6 @@ cd ansible
   * The selection tags do currently not work.
 
 
-
 ## Installation and configuration of software with Ansible
 
 * Execute playbooks
@@ -78,13 +77,13 @@ _This installed:_
 
 General.yml created ~/Desktop/RD to which you can mount your Research Drive account (see below). The _local_mount_ in config.yml should point tho this directory. In addition, it cloned the ENCORE repository in ~/.
 
-General.yml also sets the timezone:
-On Ubuntu, setting the timezone is immediate.
+General.yml also sets the **timezone**:
+- On Ubuntu, setting the timezone is immediate.
 - timedatectl set-timezone Europe/Amsterdam (and Ansible’s timezone module) updates /etc/localtime (symlink) and /etc/timezone.
 - From that moment on, all new time calculations/display use the new timezone. You don’t need to reboot.
-- What does not automatically happen is “time synchronization” in the sense of adjusting the clock value via NTP. That’s separate:
+- What does not automatically happen is “time synchronization” in the sense of adjusting the clock value via NTP. That’s separate.
 - Timezone change = changes how the current time is interpreted/displayed (offset, DST rules).
-NTP sync = adjusts the system clock to be accurate.
+- NTP sync = adjusts the system clock to be accurate.
 - If your system time is already correct, you don’t need to wait for anything.
 - Enabling NTP doesn’t always “snap” the clock instantly; it may take a short moment to converge depending on network and current drift, but usually it’s quick.
 
@@ -107,8 +106,13 @@ _This installed:_
 sudo ansible-playbook -i hosts -v Vscode.yml    #OPTIONAL
 ```
 
+_This installed:_ 
+- Visual Studio Code
+
 _Notes:_
 - VScode can run from the commandline: ``code &``
+
+- It still does not fully function. In particular the extension synchronization and copilot. I am working on this.
 
 - It will ask you to choose a password for new keyring
 
@@ -174,11 +178,7 @@ _This installed:_
 - Change the playbook to download another/latest version, or use  
     - _juliaup self update_ followed by 
 	- _juliaup update_ to update to the latest version.  
-	
-- **Package manager does not work yet (Ticket submitted). Therefore, script gives still error. Same from REPL**  
-  _Note_: This should now have been solved by setting the environment variable JULIA_PKG_SERVER=""   
 
-    
 
 ```
 sudo ansible-playbook -i hosts -v Containers.yml   #OPTIONAL
@@ -187,7 +187,9 @@ sudo ansible-playbook -i hosts -v Containers.yml   #OPTIONAL
 _This installed:_ 
 - Apptainer and Docker
 
-- I didn't check if these are actually working
+_Notes:_
+- Docker has been tested and seems to work.
+- Apptainer has not been tested.
 
 ```
 sudo ansible-playbook -i hosts -v Emacs.yml   #OPTIONAL
