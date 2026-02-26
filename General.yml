@@ -13,13 +13,21 @@
       wait_for_connection:
         timeout: 300
 
-    - name: Set timezone
+    - name: Set timezone and configure NTP with chrony (Ubuntu)
       ansible.builtin.timezone:
         name: Europe/Amsterdam
 
-    - name: Ensure NTP is enabled (systemd-timesyncd)
-      ansible.builtin.command: timedatectl set-ntp true
-      changed_when: false
+    - name: Install chrony
+      ansible.builtin.apt:
+        name: chrony
+        state: present
+        update_cache: true
+
+    - name: Enable and start chrony
+      ansible.builtin.service:
+        name: chrony
+        enabled: true
+        state: started
       
     - name: Run apt update
       apt:
