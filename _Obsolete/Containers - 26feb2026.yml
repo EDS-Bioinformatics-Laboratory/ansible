@@ -53,49 +53,6 @@
       ansible.builtin.debug:
         msg: "{{ docker_version.stdout }}"
 
-    - name: Ensure systemd drop-in directory for Docker exists
-      ansible.builtin.file:
-        path: /etc/systemd/system/docker.service.d
-        state: directory
-        mode: "0755"
-
-    - name: Configure Docker proxy environment (systemd drop-in)
-      ansible.builtin.copy:
-        dest: /etc/systemd/system/docker.service.d/http-proxy.conf
-        mode: "0644"
-        content: |
-          [Service]
-          Environment="HTTP_PROXY=http://11.5.0.4:3128"
-          Environment="HTTPS_PROXY=http://11.5.0.4:3128"
-          Environment="NO_PROXY=localhost,127.0.0.1"
-      notify:
-        - Reload systemd manager configuration
-        - Restart docker
-
-    # Only needed if you truly want daemon-reexec (rare). "daemon-reload" is normally enough.
-    # - name: Re-exec systemd (rarely required)
-    #   ansible.builtin.command: systemctl daemon-reexec
-
-    # This is generally a bad idea from a security standpoint.
-    # Prefer adding users to the docker group instead of chmod 666.
-    - name: Set docker.sock permissions (NOT recommended)
-      ansible.builtin.file:
-        path: /var/run/docker.sock
-        mode: "0666"
-     #when: ansible_facts.services is not defined  # remove this line if you want it unconditional
-
-  handlers:
-    - name: Reload systemd manager configuration
-      ansible.builtin.systemd:
-        daemon_reload: true
-
-    - name: Restart docker
-      ansible.builtin.systemd:
-        name: docker
-        state: restarted
-
-## Next install Apptainer
-
     - name: Download Apptainer .deb package
       ansible.builtin.get_url:
         url: https://github.com/apptainer/apptainer/releases/download/v1.4.3/apptainer_1.4.3_amd64.deb
