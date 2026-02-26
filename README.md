@@ -78,6 +78,16 @@ _This installed:_
 
 General.yml created ~/Desktop/RD to which you can mount your Research Drive account (see below). The _local_mount_ in config.yml should point tho this directory. In addition, it cloned the ENCORE repository in ~/.
 
+General.yml also sets the timezone:
+On Ubuntu, setting the timezone is immediate.
+- timedatectl set-timezone Europe/Amsterdam (and Ansible’s timezone module) updates /etc/localtime (symlink) and /etc/timezone.
+- From that moment on, all new time calculations/display use the new timezone. You don’t need to reboot.
+- What does not automatically happen is “time synchronization” in the sense of adjusting the clock value via NTP. That’s separate:
+- Timezone change = changes how the current time is interpreted/displayed (offset, DST rules).
+NTP sync = adjusts the system clock to be accurate.
+- If your system time is already correct, you don’t need to wait for anything.
+- Enabling NTP doesn’t always “snap” the clock instantly; it may take a short moment to converge depending on network and current drift, but usually it’s quick.
+
 _Note:_ at this point you can mount your Research Drive account following the instructions in the next section, or you can continue to first install software with the remaining playbooks. Mounting Research Drive at this point may help to easily transfer files and copy-paste (see below) in case you need to debug or change files.
 
 
