@@ -93,11 +93,34 @@
     - name: Add juliaup to PATH in .bashrc
       ansible.builtin.lineinfile:
         path: "{{ root_path }}/.bashrc"
-        line: 'export PATH="$HOME/.juliaup/bin:$PATH"'
+        line: 'export PATH="$HOME/.juliaup/bin:$PATH"; export HTTP_PROXY="{{ http_proxy }}"; export HTTPS_PROXY="{{ https_proxy }}"'
         regexp: '^export PATH=.*\.juliaup/bin'
         state: present
         create: yes
         backup: yes
+      environment:
+        HTTP_PROXY: "{{ http_proxy }}"
+        HTTP_PROXY: "{{ http_proxy }}"
+        FTP_PROXY="{{ ftp_proxy }}"
+        NO_PROXY="{{ no_proxy }}"
+      become: true
+      become_user: "{{ actual_user }}"
+
+   - name: Proxy settings
+      ansible.builtin.debug:
+        msg: 
+          - "HTTP_PROXY set to {{ lookup('env', 'HTTP_PROXY') }}" 
+          - "HTTPS_PROXY set to {{ lookup('env', 'HTTPS_PROXY') }}" 
+          
+    - name: Create a startup.jl file in .julia/config and add the proxy settings
+      ansible.builtin.shell:
+        cmd:
+          mkdir ${HOME}/.julia/config;
+          touch ${HOME}/.julia/config/startup.jl;
+          echo ENV[\"JULIA_SSL_NO_VERIFY_HOSTS\"] = \"pkg.julialang.org\" > ${HOME}/.julia/config/startup.jl;
+          echo ENV[\"JULIA_PKG_SERVER\"]=\"\" >> ${HOME}/.julia/config/startup.jl;
+          echo ENV[\"HTTP_PROXY\"]=\"{{ http_proxy }}\" >> ${HOME}/.julia/config/startup.jl;
+          echo ENV[\"HTTPS_PROXY\"]=\"{{ https_proxy }}\" >> ${HOME}/.julia/config/startup.jl
       become: true
       become_user: "{{ actual_user }}"
 
@@ -121,6 +144,10 @@
       environment:
         HOME: "{{ root_path }}"
         USER: "{{ actual_user }}"
+        HTTP_PROXY: "{{ http_proxy }}"  # Probably not really needed ...
+        HTTPS_PROXY: "{{ https_proxy }}"
+        FTP_PROXY: "{{ ftp_proxy }}"
+        NO_PROXY: "{{ no_proxy }}"
       become: true
       become_user: "{{ actual_user }}"
       register: pkg_status
