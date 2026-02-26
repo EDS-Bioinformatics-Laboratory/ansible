@@ -281,27 +281,23 @@ The following websites should be added to the myDre [External Access List](https
 
 I also provide the list here in case is magically disappears on myDre. Then just copy this list back into the External Access List..
 
-rstudio.org   
-rstudio.com  
+rstudio.org     
 r-project.org   
-posit.co  
 vscode-sync.trafficmanager.net   
 vscode.dev   
 gnu.org   
 melpa.org   
-docker.com   
-docker.io  
-gcr.io  
+docker.com      
 install-github.me   
 office.com   
-microsoftonline.com  
+microsoftonline.com   
 mydre.org   
 conda.io   
 anaconda.com   
 anaconda.org   
 amsterdamumc.data.surf   
 julialang.org   
-google.nl   
+google.nl      
 google.com   
 surf.nl   
 rclone.org   
@@ -311,7 +307,11 @@ githubassets.com
 git-scm.com   
 githubusercontent.com   
 gitlab.com   
-packages.microsoft.com   
+packages.microsoft.com     
 conda-forge.org   
 visualstudio.com   
+docker.io   
+gcr.io   
+posit.co   
+rstudio.com      
   
