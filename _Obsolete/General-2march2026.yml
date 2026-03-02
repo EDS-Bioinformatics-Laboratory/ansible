@@ -6,15 +6,14 @@
   remote_user: "{{ username }}"
   become: yes
   connection: local
-  gather_facts: true   # recommended so you can debug/branch if needed
-
+  gather_facts: false
+  
   tasks:
     - name: Wait for system to become reachable
-      ansible.builtin.wait_for_connection:
+      wait_for_connection:
         timeout: 300
 
-    # --- System time / NTP (root) ---
-    - name: Set timezone
+    - name: Set timezone and configure NTP with chrony (Ubuntu)
       ansible.builtin.timezone:
         name: Europe/Amsterdam
 
@@ -29,43 +28,44 @@
         name: chrony
         enabled: true
         state: started
-
-    # Optional: force an immediate sync (useful right after provisioning)
-    - name: Make chrony step the clock immediately (if needed)
-      ansible.builtin.command: chronyc -a makestep
-      changed_when: false
-
-    # --- Packages (root) ---
-    - name: Update all packages to their latest version
-      ansible.builtin.apt:
-        name: "*"
-        state: latest
+      
+    - name: Run apt update
+      apt:
         update_cache: yes
 
-    - name: Install rclone and gedit
-      ansible.builtin.apt:
-        name:
-          - rclone
-          - gedit
-        state: present
+    - name: Update all packages to their latest version
+      apt:
+        name: "*"
+        state: latest
 
-    # --- User-home items (no sudo) ---
-    - name: Ensure RD directory exists on user's Desktop
+    - name: Install rclone
+      apt:
+        name: "rclone"
+        state: latest
+        
+    - name: Install gedit
+      apt:
+        name: "gedit"
+        state: present
+   
+    - name: Create ~/Desktop/RD directory for mounting Research Drive
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/Desktop/RD"
+        path: "{{ root_path }}/Desktop/RD"
         state: directory
-        mode: "0755"
+        mode: '0755'
       become: no
       tags: rd
 
-    - name: Clone ENCORE repository into user's home
+    - name: Clone ENCORE repository
       ansible.builtin.git:
         repo: https://github.com/EDS-Bioinformatics-Laboratory/ENCORE.git
-        dest: "{{ ansible_env.HOME }}/ENCORE"
+        dest: "{{ root_path }}/ENCORE"
         version: "{{ ansible_repo_branch | default('main') }}"
         update: yes
       become: no
+      environment:
+        HOME: "{{ root_path }}"
 
     - name: Display success message
       ansible.builtin.debug:
-        msg: "Repository cloned to {{ ansible_env.HOME }}/ENCORE"
+        msg: "Repository cloned to {{ root_path }}"  
