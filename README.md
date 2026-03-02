@@ -65,10 +65,9 @@ _Notes:_
 * In case you need to debug, you can start by using ``-vvv`` instead of ``-v``
 * All steps are mandatory unless indicated.
 
-Execute General.yml WITHOUT using sudo!
 
 ```
-ansible-playbook -i hosts -v General.yml
+sudo ansible-playbook -i hosts -v General.yml
 ```
 
 _This installed:_ 
