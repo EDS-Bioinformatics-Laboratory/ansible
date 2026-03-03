@@ -42,6 +42,28 @@ _This installed:_
 - ansible
 - git
 
+To configure git:
+
+```
+git config --global http.proxy http://proxy.mydre.org:3128
+git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
+```
+
+This will make a ~/.gitconfig file
+When pushing changes to a repository, you will be asked for your username and password. The password should be a 'fine-grained token' that you can set from https://github.com/settings/profile  --> Developer Settings --> Personal Access Tokens. Make sure to select all or individual repositories. Set the permission for 'Content' to read/write, and ensure that resource owner is set to EDS-Bioinformatics-Laboratory.
+
+_Note_   
+I also tried   
+```
+ssh-keygen -t ed25519 -C "you@example.com"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+cat ~/.ssh/id_ed25519.pub
+```
+and next, add the printed public key to GitHub → Settings → SSH and GPG keys. However, I could not get that to work.    
+
+
 * Clone the ansible repository
 
 ```
