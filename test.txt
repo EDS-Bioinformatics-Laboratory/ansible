@@ -1,0 +1,15 @@
+
+
+
+
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+
+
+git config --global user.name "ahvankampen"
+git config --global user.email "a.h.vankampen@amsterdamumc.nl"
+
+
+Check user name
+git config --global --get user.name
+
