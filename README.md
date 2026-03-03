@@ -161,6 +161,7 @@ _This added the following to .bashrc_
 - Alias lsg=ls -ag
 - Alias aclone to clone the ansible git repository
 - Alias eclone to clone the ENCORE git repository
+- Alias vscode=code 
 
   
 
