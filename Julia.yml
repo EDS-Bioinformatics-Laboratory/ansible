@@ -100,7 +100,7 @@
         backup: yes
       environment:
         HTTP_PROXY: "{{ http_proxy }}"
-        HTTP_PROXY: "{{ http_proxy }}"
+        HTTPS_PROXY: "{{ http_proxy }}"
         FTP_PROXY: "{{ ftp_proxy }}"
         NO_PROXY: "{{ no_proxy }}"
       become: true
