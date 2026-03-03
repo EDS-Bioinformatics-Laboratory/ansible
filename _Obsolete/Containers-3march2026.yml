@@ -1,27 +1,4 @@
 ---
-# Install Docker + configure Docker daemon proxy + install Apptainer on Ubuntu.
-#
-# Notes / gotchas
-# - Docker group membership:
-#   After adding a user to the `docker` group, the user usually must log out/in
-#   (or start a new shell session) for the new group membership to apply.
-#
-# - apt_key deprecation:
-#   The `apt_key` module is considered deprecated in newer best practices.
-#   It still works, but a more modern approach is to install the key into
-#   /etc/apt/keyrings and reference it via `signed-by=...` in the repository.
-#
-# - Proxy scope:
-#   The systemd drop-in proxy configuration only affects the Docker daemon.
-#   It does NOT affect `apt` package downloads or Ansible's `get_url` downloads.
-#   If you are behind a proxy for `apt`, configure an apt proxy (e.g.
-#   /etc/apt/apt.conf.d/*). If you are behind a proxy for `get_url` (GitHub),
-#   set environment variables for that task or configure system-wide proxy.
-#
-# - Docker socket permissions:
-#   Avoid chmod 0666 on /var/run/docker.sock; it is insecure. Prefer adding
-#   specific users to the `docker` group (as this playbook does).
-
 - name: Install a general virtual machine
   hosts: all
   vars_files:
@@ -30,7 +7,7 @@
   become: yes
   connection: local
   gather_facts: yes
-
+  
   tasks:
     - name: Install prerequisites
       ansible.builtin.apt:
@@ -67,7 +44,8 @@
         enabled: yes
 
     - name: Verify Docker installation
-      ansible.builtin.command: docker --version
+      ansible.builtin.command:
+        cmd: docker --version
       register: docker_version
       changed_when: false
 
@@ -94,26 +72,17 @@
         - Reload systemd manager configuration
         - Restart docker
 
-    - name: Allow {{ username }} to run docker without sudo (recommended)
-      ansible.builtin.user:
-        name: "{{ username }}"
-        groups: docker
-        append: true
+    # Only needed if you truly want daemon-reexec (rare). "daemon-reload" is normally enough.
+    # - name: Re-exec systemd (rarely required)
+    #   ansible.builtin.command: systemctl daemon-reexec
 
-    # -------------------------
-    # Apptainer installation
-    # -------------------------
-    - name: Download Apptainer .deb package
-      ansible.builtin.get_url:
-        url: https://github.com/apptainer/apptainer/releases/download/v1.4.3/apptainer_1.4.3_amd64.deb
-        dest: /tmp/apptainer_1.4.3_amd64.deb
-        mode: "0644"
-        force: no
-
-    - name: Install Apptainer package
-      ansible.builtin.apt:
-        deb: /tmp/apptainer_1.4.3_amd64.deb
-        state: present
+    # This is generally a bad idea from a security standpoint.
+    # Prefer adding users to the docker group instead of chmod 666.
+    - name: Set docker.sock permissions (NOT recommended)
+      ansible.builtin.file:
+        path: /var/run/docker.sock
+        mode: "0666"
+     #when: ansible_facts.services is not defined  # remove this line if you want it unconditional
 
   handlers:
     - name: Reload systemd manager configuration
@@ -124,3 +93,18 @@
       ansible.builtin.systemd:
         name: docker
         state: restarted
+
+## Next install Apptainer
+
+    - name: Download Apptainer .deb package
+      ansible.builtin.get_url:
+        url: https://github.com/apptainer/apptainer/releases/download/v1.4.3/apptainer_1.4.3_amd64.deb
+        dest: /home/{{ username }}/apptainer.deb
+        mode: '0644'
+        force: no
+
+    - name: Install apptainer package
+      ansible.builtin.apt:
+        deb: /home/{{ username }}/apptainer.deb
+        state: present
+        
