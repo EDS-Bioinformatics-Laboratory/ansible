@@ -131,22 +131,24 @@ _This installed:_
 - Visual Studio Code
 
 _Notes:_
-- VScode can run from the commandline: ``code &``
+- VScode can run from the commandline: ``code`` or ``vscode``
+
+- When you start VScode for the first time, then pay attention to any message in VSCode. You may be asked to update certain parts. 
 
 - It still does not fully function. In particular the extension synchronization and copilot. I am working on this.
 
-- It will ask you to choose a password for new keyring
+- It will ask you to choose a password for new keyring: use your mydre password.
 
 - If you want to use the same extensions as you have on your Windows/MacOS, then enable syncrhonization in VSCode. Alternatively, install the extensions manually. To enable synchronization:
 	- go to Settings Sync (ctrl-shift-p)
 	
 	- Click on Backup and Sync Settings
 	
-	- Sign in to your github or microsoft account
+	- Sign in to your github (or microsoft) account
 	
-	- At this moment it does not seem to sync the extensions
+	- At this moment it does not seem to sync the extensions. However, you can install extensions from the vscode menu. 
 	
-	- I did not manage to connect to my (paid) co-pilot account although I was logged in with my github account.
+	- Copilot is installed and you can login to your own copilot account. But at this moment it does not work because it is missing a language model.
 	
 	  
 
@@ -305,37 +307,41 @@ The following websites should be added to the myDre [External Access List](https
 
 I also provide the list here in case is magically disappears on myDre. Then just copy this list back into the External Access List..
 
-rstudio.org     
-r-project.org   
-vscode-sync.trafficmanager.net   
-vscode.dev   
-gnu.org   
-melpa.org   
-docker.com      
-install-github.me   
-office.com   
-microsoftonline.com   
-mydre.org   
-conda.io   
-anaconda.com   
-anaconda.org   
-amsterdamumc.data.surf   
-julialang.org   
-google.nl      
-google.com   
-surf.nl   
-rclone.org   
-ubuntu.com   
-github.com   
-githubassets.com   
-git-scm.com   
-githubusercontent.com   
-gitlab.com   
-packages.microsoft.com     
-conda-forge.org   
-visualstudio.com   
-docker.io   
-gcr.io   
+login.live.com    
+azureedge.net    
+ocsp.msocsp.com    
+microsoft.com    
+vsassets.io    
+rstudio.org    
+r-project.org    
+vscode-sync.trafficmanager.net    
+vscode.dev    
+gnu.org    
+melpa.org    
+docker.com    
+install-github.me    
+office.com    
+microsoftonline.com    
+mydre.org    
+conda.io    
+anaconda.com    
+anaconda.org    
+amsterdamumc.data.surf    
+julialang.org    
+google.nl    
+google.com    
+surf.nl    
+rclone.org    
+ubuntu.com    
+github.com    
+githubassets.com    
+git-scm.com    
+githubusercontent.com    
+gitlab.com    
+conda-forge.org    
+visualstudio.com    
+docker.io    
+gcr.io    
 posit.co   
-rstudio.com      
+rstudio.com    
   
