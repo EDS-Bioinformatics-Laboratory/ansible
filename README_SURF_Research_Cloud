@@ -19,11 +19,11 @@ The Ansible script assumes a virtual machine running Ubuntu. It might also work 
 
 ## Setting up an Ubuntu VM
 
-* Create a new Ubuntu v22 VM on myDre (warning: Ubuntu 24 does not work)
+* Create a new Ubuntu v22 VM on SURF Research Cloud (warning: probably Ubuntu 24 does not work [not tested])
 
-* Login to the VM using your myDRE account using RDP (X environment), or SSH  (terminal).
+* Login to the VM with your SURF Research Cloud account using SSH (terminal).
 
-* In the next step only do 'upgrade' if you are using Ubuntu version 22. Currently, you cannot upgrade Ubuntu 24.
+* In the next step only do 'upgrade' if you are using Ubuntu version 22. Currently, you probably cannot upgrade Ubuntu 24 [not tested].
 
 ```
 sudo apt update
@@ -72,7 +72,7 @@ cd ansible
 ```
 
 * Modify the configuration file ``config.yml``
-  * Change the username to your own **myDre** username.
+  * Change the username to your own **SURF Research Cloud** username.
   * Change the _local_mount_ path 
   * Change the _root_path_
   * The selection tags do currently not work.
