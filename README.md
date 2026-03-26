@@ -1,6 +1,6 @@
 # Setup default myDre VM 
 
-Repository for installation of frequently used software on empty virtual machines (VM) on myDRE. This might also work on SURF Research Cloud but has not been tested yet.d
+Repository for installation of frequently used software on empty virtual machines (VM) on myDRE. This might also work on SURF Research Cloud but has not been tested yet.
 
 Developed by:
 
