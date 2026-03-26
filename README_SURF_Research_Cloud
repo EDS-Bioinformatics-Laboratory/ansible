@@ -1,0 +1,346 @@
+# Setup default SURF Research Cloud VM 
+
+Repository for installation of frequently used software on empty virtual machines (VM) on SURF Research Cloud.
+
+Developed by:
+
+* Barbera van Schaik, b.d.vanschaik@amsterdamumc.nl
+* Antoine van Kampen, a.h.vankampen@amsterdamumc.nl
+* Perry Moerland, p.d.moerland@amsterdamumc.nl
+* Yiting Shen, y.shen@amsterdamumc.nl
+
+## Documentation
+
+See Barbera's [slide deck](https://github.com/EDS-Bioinformatics-Laboratory/BioLabMatters/blob/master/Presentations/Schaik_20251016-tutorial-VM-ansible.pptx) for examples of how to make this work on MyDre and SURF.
+
+## Requirements
+
+The Ansible script assumes a virtual machine running Ubuntu. It might also work on Debian.
+
+## Setting up an Ubuntu VM
+
+* Create a new Ubuntu v22 VM on myDre (warning: Ubuntu 24 does not work)
+
+* Login to the VM using your myDRE account using RDP (X environment), or SSH  (terminal).
+
+* In the next step only do 'upgrade' if you are using Ubuntu version 22. Currently, you cannot upgrade Ubuntu 24.
+
+```
+sudo apt update
+sudo apt upgrade 
+```
+
+- Stop and restart the VM, and login again.
+
+```
+sudo apt install software-properties-common
+sudo apt install ansible git
+```
+
+_This installed:_ 
+- ansible
+- git
+
+To configure git:
+
+```
+git config --global http.proxy http://proxy.mydre.org:3128
+git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
+```
+
+This will make a ~/.gitconfig file
+When pushing changes to a repository, you will be asked for your username and password. The password should be a 'fine-grained token' that you can set from https://github.com/settings/profile  --> Developer Settings --> Personal Access Tokens. Make sure to select all or individual repositories. Set the permission for 'Content' to read/write, and ensure that resource owner is set to EDS-Bioinformatics-Laboratory.
+
+_Note_   
+I also tried   
+```
+ssh-keygen -t ed25519 -C "you@example.com"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+cat ~/.ssh/id_ed25519.pub
+```
+and next, add the printed public key to GitHub → Settings → SSH and GPG keys. However, I could not get that to work.    
+
+
+* Clone the ansible repository
+
+```
+cd ~ 
+git clone https://github.com/EDS-Bioinformatics-Laboratory/ansible.git
+cd ansible
+```
+
+* Modify the configuration file ``config.yml``
+  * Change the username to your own **myDre** username.
+  * Change the _local_mount_ path 
+  * Change the _root_path_
+  * The selection tags do currently not work.
+
+
+## Installation and configuration of software with Ansible
+
+* Execute playbooks
+
+_Notes:_ 
+* In case you need to debug, you can start by using ``-vvv`` instead of ``-v``
+* All steps are mandatory unless indicated.
+
+
+```
+sudo ansible-playbook -i hosts -v General.yml
+```
+
+_This installed:_ 
+- rclone
+- gedit
+
+General.yml created ~/Desktop/RD to which you can mount your Research Drive account (see below). The _local_mount_ in config.yml should point tho this directory. In addition, it cloned the ENCORE repository in ~/.
+
+General.yml also sets the **timezone**:
+- On Ubuntu, setting the timezone is immediate.
+- timedatectl set-timezone Europe/Amsterdam (and Ansible’s timezone module) updates /etc/localtime (symlink) and /etc/timezone.
+- From that moment on, all new time calculations/display use the new timezone. You don’t need to reboot.
+- What does not automatically happen is “time synchronization” in the sense of adjusting the clock value via NTP. That’s separate.
+- Timezone change = changes how the current time is interpreted/displayed (offset, DST rules).
+- NTP sync = adjusts the system clock to be accurate.
+- If your system time is already correct, you don’t need to wait for anything.
+- Enabling NTP doesn’t always “snap” the clock instantly; it may take a short moment to converge depending on network and current drift, but usually it’s quick.
+
+_Note:_ at this point you can mount your Research Drive account following the instructions in the next section, or you can continue to first install software with the remaining playbooks. Mounting Research Drive at this point may help to easily transfer files and copy-paste (see below) in case you need to debug or change files.
+
+
+```
+sudo ansible-playbook -i hosts -v Conda.yml  
+source ~/.bashrc
+```
+
+_This installed:_ 
+- conda base environment
+- numpy, pandas, notebook 7 
+- and activated conda
+
+  
+
+```
+sudo ansible-playbook -i hosts -v Vscode.yml    #OPTIONAL
+```
+
+_This installed:_ 
+- Visual Studio Code
+
+_Notes:_
+- VScode can run from the commandline: ``code`` or ``vscode``
+
+- When you start VScode for the first time, then pay attention to any message in VSCode. You may be asked to update certain parts. 
+
+- It still does not fully function. In particular the extension synchronization and copilot. I am working on this.
+
+- It will ask you to choose a password for new keyring: use your mydre password.
+
+- If you want to use the same extensions as you have on your Windows/MacOS, then enable syncrhonization in VSCode. Alternatively, install the extensions manually. To enable synchronization:
+	- go to Settings Sync (ctrl-shift-p)
+	
+	- Click on Backup and Sync Settings
+	
+	- Sign in to your github (or microsoft) account
+	
+	- At this moment it does not seem to sync the extensions. However, you can install extensions from the vscode menu. 
+	
+	- Copilot is installed and you can login to your own copilot account. But at this moment it does not work because it is missing a language model.
+	
+	  
+
+```
+sudo ansible-playbook -i hosts -v Bashrc.yml
+source ~/.bashrc
+```
+
+_This added the following to .bashrc_  
+- Aliases for rdmount and rdumount (i.e., (un)mounting Research Drive; first run _rclone config_; see below)  
+- Alias h=history
+- Alias lsg=ls -ag
+- Alias aclone to clone the ansible git repository
+- Alias eclone to clone the ENCORE git repository
+- Alias vscode=code 
+
+  
+
+```
+sudo ansible-playbook -i hosts -v Compilers.yml   
+```
+
+_This installed:_ 
+- gcc
+- g++
+- gfortran
+
+```
+sudo ansible-playbook -i hosts -v R.yml   #OPTIONAL
+```
+
+_This installed:_ 
+- R 
+- RStudio
+- Rtools
+- Packages: renv, ggplot
+
+_Notes:_
+- When starting RStudio you may get a pop up that a newer version is available, since the version to be installed has now been hardcoded. You should be able to download a newer version via the browser and then install it with 'sudo apt install <rstudio-XXX-amd64>.deb' in the terminal.  
+- One can use the 'R_only.yml' and 'RStudio.yml' to seperately install these tools. This is also convenient when installation of one of them fails, for example because a newer version has been detected (e.g., if the RStudio installation has already been updated manually).  
+
+```
+sudo ansible-playbook -i hosts -v Julia.yml  #OPTIONAL
+source ~/.bashrc
+```
+
+_This installed:_ 
+- Julia programming language version 1.12.4
+- juliaup  
+
+- Change the playbook to download another/latest version, or use  
+    - _juliaup self update_ followed by 
+	- _juliaup update_ to update to the latest version.  
+
+
+```
+sudo ansible-playbook -i hosts -v Containers.yml   #OPTIONAL
+```
+
+_This installed:_ 
+- Apptainer and Docker
+
+_Notes:_
+- Docker has been tested and seems to work.
+- Apptainer has not been tested.
+
+```
+sudo ansible-playbook -i hosts -v Emacs.yml   #OPTIONAL
+	                                          # This should install packages but I don't think it works. 
+										      # However, these packages seem to already be built in into emacs
+```
+
+## Mount (SURF) Research Drive
+
+Make sure you have a Research Drive account.
+
+Use **Rclone** to mount Research Drive. Rclone is installed by one of the ansible playbooks above. Rclone is a command-line program to manage files on cloud storage. This makes it much easier to transfer files between your local computer and myDre in comparison to the default upload/download system.
+
+
+If needed, then first install Rclone manually:
+
+```
+sudo -v ; curl https://rclone.org/install.sh | sudo bash
+or
+sudo apt install rclone
+```
+
+_Connect to your Research Drive account_ 
+See: [SURF Wiki](https://servicedesk.surf.nl/wiki/spaces/WIKI/pages/117179081/RD+How+to+use+Rclone+with+Research+Drive) for more information on how to configure Rclone and use it to [mount](https://servicedesk.surf.nl/wiki/spaces/WIKI/pages/117179081/RD+How+to+use+Rclone+with+Research+Drive#RD:HowtouseRclonewithResearchDrive-UseRclonetomountfilesystemsinuserspace) your Research Drive.
+
+_Webdav URL (example):_ 
+https://amsterdamumc.data.surf.nl/remote.php/dav/files/a.h.vankampen@amsterdamumc.nl
+
+_Configuration is stored in:_
+.config/rclone
+
+_Example commands_
+
+```
+rclone ls RD:
+rclone copy /my/folder RD:my/destination/folder
+```
+
+_Working with large objects_
+When you want to upload large files to Research Drive, we recommend using a timeout of 10 minutes per gigabyte of the largest source file.
+
+As an example, the largest file in the source directory is 5GB. Calculating the argument for --timeout gives: 10 minutes x 5GB = 50 minutes:
+
+`rclone copy --use-cookies --timeout 50m ~/my_5gb_file.bin RD:my/destination/folder`
+
+Important: Since this can cause data loss, test first with the --dry-run flag to see exactly what would be copied and deleted.
+Note that files in the destination won’t be deleted if there were any errors at any point.
+If my/destination/folder doesn’t exist, it is created and the contents of /my/folder goes there.
+
+
+_Use Rclone to mount file systems in user space_
+Using Rclone to mount a file system in user space is done as follows:
+
+`rclone mount --use-cookies --timeout 15m RD: /path/to/local/mount --vfs-cache-mode writes`
+
+The flag `--use-cookies` is needed, to get you always on the same Research Drive back-end, to prevent file lock between back-ends. The timeout flag is useful for uploading large files, we recommend using a timeout of 10 minutes per gigabyte of the largest source file. The last part `--vfs-cache-mode writes` allows applications to write data to the mount.
+
+You can unmount this file system by:
+
+`fusermount -u /path/to/local/mount`
+	
+**Note:** the ansible playbook bashrc will add rdmount and rdumount to .bashrc
+
+
+## **Copy-Paste workaround**
+It is not possible to copy-paste to and from myDre. One work around is to make use of the mounted Research Drive: just put a file copypaste.txt in the mounted directory (eg ~/Desktop/RD) and sync with your directory on Research Drive (eg. /Bioinformatics/myDre):
+
+```
+cd ~/Desktop/RD
+rclone sync RD:/Bioinformatics/myDre .
+```
+
+or vice versa
+
+```
+rclone sync . RD:/Bioinformatics/myDre
+```
+
+## **Troubleshooting**
+- With Vscode.yml and Conda.yml you may sometimes get an error like: ".......Conflicting values set for option 
+Signed-By regarding source https://packages.microsoft.com/repos/code .......". It is unclear why this happens. So 
+far I fixed this by deleting the files in /usr/share/keyring that were installed at the moment you executed the 
+ansible playbook. In addition, I deleted the _conda.list_ and/or _vscode.list_ and/or _vscode.sources_, and 
+_packages_microsfot_com_repost_code.list_. See also: [here](https://askubuntu.com/questions/1433368/how-to-solve-gpg-error-with-packages-microsoft-com-pubkey)
+
+## **External Access list**
+
+[[here](https://mydre.org/workspaces/dws-3049-AUBioLab/access/domain)]
+
+The following websites should be added to the myDre [External Access List](https://support.mydre.org/portal/en/kb/articles/testing-self-service-domain-allowlisting) if these are not there already. This ensures that myDre can access these sites. The External Access List is global for all Workspaces and VMs. In principle, this list will never be deleted and, therefore, only needs to be setup once. In case you need access to another website (e.g., to install an R package), then simply add it to the list.
+
+I also provide the list here in case is magically disappears on myDre. Then just copy this list back into the External Access List..
+
+login.live.com    
+azureedge.net    
+ocsp.msocsp.com    
+microsoft.com    
+vsassets.io    
+rstudio.org    
+r-project.org    
+vscode-sync.trafficmanager.net    
+vscode.dev    
+gnu.org    
+melpa.org    
+docker.com    
+install-github.me    
+office.com    
+microsoftonline.com    
+mydre.org    
+conda.io    
+anaconda.com    
+anaconda.org    
+amsterdamumc.data.surf    
+julialang.org    
+google.nl    
+google.com    
+surf.nl    
+rclone.org    
+ubuntu.com    
+github.com    
+githubassets.com    
+git-scm.com    
+githubusercontent.com    
+gitlab.com    
+conda-forge.org    
+visualstudio.com    
+docker.io    
+gcr.io    
+posit.co   
+rstudio.com    
+  
