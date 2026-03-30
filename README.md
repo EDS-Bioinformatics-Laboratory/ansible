@@ -135,8 +135,6 @@ _Notes:_
 
 - When you start VScode for the first time, then pay attention to any message in VSCode. You may be asked to update certain parts. 
 
-- It still does not fully function. In particular the extension synchronization and copilot. I am working on this.
-
 - It will ask you to choose a password for new keyring: use your mydre password.
 
 - If you want to use the same extensions as you have on your Windows/MacOS, then enable syncrhonization in VSCode. Alternatively, install the extensions manually. To enable synchronization:
@@ -148,7 +146,7 @@ _Notes:_
 	
 	- At this moment it does not seem to sync the extensions. However, you can install extensions from the vscode menu. 
 	
-	- Copilot is installed and you can login to your own copilot account. But at this moment it does not work because it is missing a language model.
+	- Copilot is installed and you can login to your own copilot account. 
 	
 	  
 
@@ -337,6 +335,7 @@ github.com
 githubassets.com    
 git-scm.com    
 githubusercontent.com    
+githubcopilot.com          
 gitlab.com    
 conda-forge.org    
 visualstudio.com    
@@ -344,4 +343,4 @@ docker.io
 gcr.io    
 posit.co   
 rstudio.com    
-  
+
