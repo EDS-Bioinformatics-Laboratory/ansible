@@ -26,7 +26,7 @@ The Ansible script assumes a virtual machine running Ubuntu. It might also work 
 * In the next step only do 'upgrade' if you are using Ubuntu version 22. Currently, you probably cannot upgrade Ubuntu 24 [not tested].
 
 ```
-sudo apt update
+sudo apt update  
 sudo apt upgrade 
 ```
 
@@ -44,13 +44,15 @@ _This installed:_
 To configure git:
 
 ```
-git config --global http.proxy http://proxy.mydre.org:3128
-git config --global user.email "you@example.com"
-git config --global user.name "Your Name"
+git config --global http.proxy http://proxy.mydre.org:3128    #I did not use proxy. After last step, I tried "curl https://github.com" and I got response. 
+git config --global user.email "you@example.com"	#This worked
+git config --global user.name "Your Name"	#This also worked
 ```
 
-This will make a ~/.gitconfig file
+This will make a ~/.gitconfig file	
 When pushing changes to a repository, you will be asked for your username and password. The password should be a 'fine-grained token' that you can set from https://github.com/settings/profile  --> Developer Settings --> Personal Access Tokens. Make sure to select all or individual repositories. Set the permission for 'Content' to read/write, and ensure that resource owner is set to EDS-Bioinformatics-Laboratory.
+
+# I tried "cat ~/.gitconfig" and I got response. The user.email and user.name it returned is identical with the last step
 
 _Note_   
 I also tried   
@@ -63,7 +65,7 @@ cat ~/.ssh/id_ed25519.pub
 and next, add the printed public key to GitHub → Settings → SSH and GPG keys. However, I could not get that to work.    
 
 
-* Clone the ansible repository
+* Clone the ansible repository	#Worked
 
 ```
 cd ~ 
@@ -72,7 +74,7 @@ cd ansible
 ```
 
 * Modify the configuration file ``config.yml``
-  * Change the username to your own **SURF Research Cloud** username.
+  * Change the username to your own **SURF Research Cloud** username.	
   * Change the _local_mount_ path 
   * Change the _root_path_
   * The selection tags do currently not work.
@@ -88,7 +90,7 @@ _Notes:_
 
 
 ```
-sudo ansible-playbook -i hosts -v General.yml
+sudo ansible-playbook -i hosts -v General.yml	#worked
 ```
 
 _This installed:_ 
@@ -111,7 +113,7 @@ _Note:_ at this point you can mount your Research Drive account following the in
 
 
 ```
-sudo ansible-playbook -i hosts -v Conda.yml  
+sudo ansible-playbook -i hosts -v Conda.yml		#worked
 source ~/.bashrc
 ```
 
@@ -152,7 +154,7 @@ _Notes:_
 	  
 
 ```
-sudo ansible-playbook -i hosts -v Bashrc.yml
+sudo ansible-playbook -i hosts -v Bashrc.yml	#worked
 source ~/.bashrc
 ```
 
@@ -219,6 +221,7 @@ sudo ansible-playbook -i hosts -v Emacs.yml   #OPTIONAL
 	                                          # This should install packages but I don't think it works. 
 										      # However, these packages seem to already be built in into emacs
 ```
+#Worked
 
 ## Mount (SURF) Research Drive
 
