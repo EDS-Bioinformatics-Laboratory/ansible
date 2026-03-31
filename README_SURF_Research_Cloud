@@ -98,6 +98,7 @@ _This installed:_
 - gedit
 
 General.yml created ~/Desktop/RD to which you can mount your Research Drive account (see below). The _local_mount_ in config.yml should point tho this directory. In addition, it cloned the ENCORE repository in ~/.
+# These are not in ~/Desktop/ but in /root/Desktop. Same thing holds for the ENCORE. Tried without sudo but got one failure.
 
 General.yml also sets the **timezone**:
 - On Ubuntu, setting the timezone is immediate.
