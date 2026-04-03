@@ -196,6 +196,8 @@ _Notes:_
 sudo ansible-playbook -i hosts -v Julia.yml  #OPTIONAL
 source ~/.bashrc
 ```
+# I failed one time due to that Julia is trying to connect to 11.5.0.4 (the old myDRE proxy) to reach GitHub, but that proxy doesn't exist on SURF ResearchCloud.
+# Therefore, I removed "http_proxy", "https_proxy", "ftp_proxy" in the config.yml. Then I tried it again and workded.
 
 _This installed:_ 
 - Julia programming language version 1.12.4
