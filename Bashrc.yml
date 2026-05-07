@@ -23,7 +23,7 @@
         create: yes
         backup: yes
 
-    - name: Add unmout alias to .bashrc
+    - name: Add unmount alias to .bashrc
       ansible.builtin.lineinfile:
         path: "{{ root_path }}/.bashrc"
         line: "alias rdumount='fusermount -u {{ local_mount }}'"

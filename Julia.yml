@@ -90,7 +90,7 @@
       become: true
       become_user: "{{ actual_user }}"
       
-    - name: Add juliaup to PATH in .bashrc
+    - name: Add juliaup to PATH in .bashrc with proxy
       ansible.builtin.lineinfile:
         path: "{{ root_path }}/.bashrc"
         line: 'export PATH="$HOME/.juliaup/bin:$PATH"; export HTTP_PROXY="{{ http_proxy }}"; export HTTPS_PROXY="{{ http_proxy }}"'
@@ -105,12 +105,26 @@
         NO_PROXY: "{{ no_proxy }}"
       become: true
       become_user: "{{ actual_user }}"
+      when: use_proxy
+      
+    - name: Add juliaup to PATH in .bashrc without proxy
+      ansible.builtin.lineinfile:
+        path: "{{ root_path }}/.bashrc"
+        line: 'export PATH="$HOME/.juliaup/bin:$PATH"'
+        regexp: '^export PATH=.*\.juliaup/bin'
+        state: present
+        create: yes
+        backup: yes
+      become: true
+      become_user: "{{ actual_user }}"
+      when: not use_proxy
 
     - name: Proxy settings
       ansible.builtin.debug:
         msg: 
           - "HTTP_PROXY set to {{ lookup('env', 'HTTP_PROXY') }}" 
           - "HTTPS_PROXY set to {{ lookup('env', 'HTTPS_PROXY') }}" 
+      when: use_proxy
           
     - name: Create a startup.jl file in .julia/config and add the proxy settings
       ansible.builtin.shell:
@@ -123,6 +137,18 @@
           echo ENV[\"HTTPS_PROXY\"]=\"{{ http_proxy }}\" >> ${HOME}/.julia/config/startup.jl
       become: true
       become_user: "{{ actual_user }}"
+      when: use_proxy
+          
+    - name: Create a startup.jl file in .julia/config without the proxy settings
+      ansible.builtin.shell:
+        cmd:
+          mkdir ${HOME}/.julia/config;
+          touch ${HOME}/.julia/config/startup.jl;
+          echo ENV[\"JULIA_SSL_NO_VERIFY_HOSTS\"] = \"pkg.julialang.org\" > ${HOME}/.julia/config/startup.jl;
+          echo ENV[\"JULIA_PKG_SERVER\"]=\"\" >> ${HOME}/.julia/config/startup.jl;
+      become: true
+      become_user: "{{ actual_user }}"
+      when: not use_proxy
 
     - name: Install Julia packages
       ansible.builtin.shell:
@@ -137,7 +163,7 @@
       register: pkg_install
       changed_when: "'Installed' in pkg_install.stdout or 'Updating' in pkg_install.stdout"
 
-    - name: Verify installed Julia packages
+    - name: Verify installed Julia packages with proxy
       ansible.builtin.shell:
         cmd: |
           julia -e 'using Pkg; Pkg.status()'
@@ -152,6 +178,20 @@
       become_user: "{{ actual_user }}"
       register: pkg_status
       changed_when: false
+      when: use_proxy
+
+    - name: Verify installed Julia packages without proxy
+      ansible.builtin.shell:
+        cmd: |
+          julia -e 'using Pkg; Pkg.status()'
+      environment:
+        HOME: "{{ root_path }}"
+        USER: "{{ actual_user }}"
+      become: true
+      become_user: "{{ actual_user }}"
+      register: pkg_status
+      changed_when: false
+      when: not use_proxy
 
     - name: Display installed packages
       ansible.builtin.debug:

@@ -52,7 +52,7 @@
     # --- User-home items (no sudo) ---
     - name: Ensure RD directory exists on user's Desktop
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/Desktop/RD"
+        path: "{{ root_path }}/Desktop/RD"
         state: directory
         mode: "0755"
       become: no
@@ -61,11 +61,11 @@
     - name: Clone ENCORE repository into user's home
       ansible.builtin.git:
         repo: https://github.com/EDS-Bioinformatics-Laboratory/ENCORE.git
-        dest: "{{ ansible_env.HOME }}/ENCORE"
+        dest: "{{ root_path }}/ENCORE"
         version: "{{ ansible_repo_branch | default('main') }}"
         update: yes
       become: no
 
     - name: Display success message
       ansible.builtin.debug:
-        msg: "Repository cloned to {{ ansible_env.HOME }}/ENCORE"
+        msg: "Repository cloned to {{ root_path }}/ENCORE"

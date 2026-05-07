@@ -28,7 +28,7 @@
         path: /usr/share/keyrings/r-project.gpg
         state: absent
 
-    - name: Download R repository GPG key to temp file
+    - name: Download R repository GPG key to temp file with proxy
       ansible.builtin.shell: |
         wget -e use_proxy=yes \
              -e http_proxy="{{ http_proxy }}" \
@@ -41,6 +41,16 @@
         http_proxy: "{{ http_proxy | default('') }}"
         https_proxy: "{{ https_proxy | default('') }}"
       register: wget_result
+      when: use_proxy
+
+    - name: Download R repository GPG key to temp file without proxy
+      ansible.builtin.shell: |
+        wget -O /tmp/r-key.asc \
+             https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc
+      args:
+        creates: /tmp/r-key.asc
+      register: wget_result
+      when: not use_proxy
 
     - name: Verify key was downloaded
       ansible.builtin.stat:
@@ -86,15 +96,20 @@
         mode: '0644'
       when: gpg_key.stat.exists
 
-    - name: Update apt cache
+    - name: Update apt cache with proxy
       ansible.builtin.apt:
         update_cache: yes
       environment:
         http_proxy: "{{ http_proxy | default('') }}"
         https_proxy: "{{ https_proxy | default('') }}"
-      when: gpg_key.stat.exists
+      when: gpg_key.stat.exists and use_proxy
 
-    - name: Download RStudio
+    - name: Update apt cache without proxy
+      ansible.builtin.apt:
+        update_cache: yes
+      when: gpg_key.stat.exists and not use_proxy
+
+    - name: Download RStudio with proxy
       ansible.builtin.get_url:
         url: https://download1.rstudio.org/electron/jammy/amd64/rstudio-2026.01.1-403-amd64.deb
         dest: /tmp/rstudio.deb
@@ -102,6 +117,14 @@
       environment:
         http_proxy: "{{ http_proxy | default('') }}"
         https_proxy: "{{ https_proxy | default('') }}"
+      when: use_proxy
+
+    - name: Download RStudio without proxy
+      ansible.builtin.get_url:
+        url: https://download1.rstudio.org/electron/jammy/amd64/rstudio-2026.01.1-403-amd64.deb
+        dest: /tmp/rstudio.deb
+        mode: '0644'
+      when: not use_proxy
 
     - name: Install RStudio dependencies
       ansible.builtin.package:

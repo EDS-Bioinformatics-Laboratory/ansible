@@ -93,6 +93,7 @@
       notify:
         - Reload systemd manager configuration
         - Restart docker
+      when: use_proxy
 
     - name: Allow {{ username }} to run docker without sudo (recommended)
       ansible.builtin.user:
