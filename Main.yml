@@ -1,74 +1,37 @@
 ---
-- name: Main orchestration playbook
-  hosts: all
-  vars_files:
-    - config.yml
-  remote_user: "{{ username }}"
-  become: yes
-  connection: local
-  gather_facts: false
-  
-  tasks:
-    - name: Run general playbook
-      ansible.builtin.include_tasks:
-        file: tasks/General.yml
-      when: run_General | default(true)
-      tags:
-        - general
+  - name: Run general playbook
+    import_playbook: General.yml
+    when: run_General | default(true)
 
-    - name: Run Conda playbook
-      ansible.builtin.include_tasks:
-        file: tasks/Conda.yml
-      when: run_Conda | default(true)
-      tags:
-        - Conda
+  - name: Run Conda playbook
+    import_playbook: Conda.yml
+    when: run_Conda | default(true)
         
-   - name: Run VScode playbook
-      ansible.builtin.include_tasks:
-        file: tasks/Vscode.yml
-      when: run_Vscode | default(true)
-      tags:
-        - vscode
+  - name: Run VScode playbook
+    import_playbook: Vscode.yml
+    when: run_Vscode | default(true)
 
-   - name: Run Julia playbook
-      ansible.builtin.include_tasks:
-        file: tasks/Julia.yml
-      when: run_Julia | default(true)
-      tags:
-        - julia
+  - name: Run Julia playbook
+    import_playbook: Julia.yml
+    when: run_Julia | default(true)
 
 
-   - name: Run Compilers playbook
-      ansible.builtin.include_tasks:
-        file: tasks/Compilers.yml
-      when: run_Compilers | default(true)
-      tags:
-        - compilers
+  - name: Run Compilers playbook
+    import_playbook: Compilers.yml
+    when: run_Compilers | default(true)
         
-   - name: Run Containers playbook
-      ansible.builtin.include_tasks:
-        file: tasks/Containers.yml
-      when: run_Containers | default(true)
-      tags:
-        - containers
+  - name: Run Containers playbook
+    import_playbook: Containers.yml
+    when: run_Containers | default(true)
 
-    - name: Run Emacs playbook
-      ansible.builtin.include_tasks:
-        file: tasks/Emacs.yml
-      when: run_Emacs | default(true)
-      tags:
-        - emacs
+  - name: Run Emacs playbook
+    import_playbook: Emacs.yml
+    when: run_Emacs | default(true)
     
-    - name: Run R playbook
-      ansible.builtin.include_tasks:
-        file: tasks/R.yml
-      when: run_R | default(true)
-      tags:
-        - R
+  - name: Run R playbook
+    import_playbook: R.yml
+    when: run_R | default(true)
         
-    - name: Run bashrc playbook
-      ansible.builtin.include_tasks:
-        file: tasks/Bashrc.yml
-      when: run_Bashrc | default(true)
-      tags:
-        - bashrc
+  - name: Run bashrc playbook
+    import_playbook: Bashrc.yml
+    when: run_Bashrc | default(true)

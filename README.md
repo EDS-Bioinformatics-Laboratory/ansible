@@ -45,7 +45,7 @@ _This installed:_
 To configure git:
 
 ```
-git config --global http.proxy http://proxy.mydre.org:3128
+git config --global http.proxy http://proxy.mydre.org:3128 # skip this step on Surf Cloud
 git config --global user.email "you@example.com"
 git config --global user.name "Your Name"
 ```
@@ -87,6 +87,15 @@ _Notes:_
 * In case you need to debug, you can start by using ``-vvv`` instead of ``-v``
 * All steps are mandatory unless indicated.
 
+Either run the playbooks individually, or run everything at once via the Main.yml playbook
+
+### Main playbook, to install everything
+
+```
+sudo ansible-playbook -i hosts -v Main.yml
+```
+
+### Individual playbooks
 
 ```
 sudo ansible-playbook -i hosts -v General.yml
