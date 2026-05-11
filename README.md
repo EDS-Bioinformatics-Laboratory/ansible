@@ -85,6 +85,7 @@ cd ansible
   * Change the username to your own **myDre** username.
   * Change the _local_mount_ path 
   * Change the _root_path_
+  * Set the _use_proxy_ setting to _false_ when working on Surf Cloud
   * The selection tags do currently not work.
 
 
