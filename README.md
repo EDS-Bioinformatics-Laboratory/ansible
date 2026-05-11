@@ -63,21 +63,21 @@ cat ~/.ssh/id_ed25519.pub
 ```
 and next, add the printed public key to GitHub → Settings → SSH and GPG keys. However, I could not get that to work.    
 
-_Update Barbera_
-
-Transfer your git RSA key to the virtual machine in ~/.ssh/ Change permissions to rw for the user only. The clone the repository via SSH (not HTTPS)
-
-```
-cd ~
-git clone git@github.com:EDS-Bioinformatics-Laboratory/ansible.git
-cd ansible
-```
-
 * Clone the ansible repository
 
 ```
 cd ~ 
 git clone https://github.com/EDS-Bioinformatics-Laboratory/ansible.git
+cd ansible
+```
+
+_Update Barbera_
+
+Transfer your git RSA key to the virtual machine in ~/.ssh/ Change permissions to rw for the user only. Then clone the repository via SSH (not HTTPS)
+
+```
+cd ~
+git clone git@github.com:EDS-Bioinformatics-Laboratory/ansible.git
 cd ansible
 ```
 
