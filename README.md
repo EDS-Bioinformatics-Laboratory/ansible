@@ -45,23 +45,16 @@ _This installed:_
 To configure git:
 
 ```
-git config --global http.proxy http://proxy.mydre.org:3128 # skip this step on Surf Cloud
-git config --global user.email "you@example.com"
-git config --global user.name "Your Name"
+git config --global http.proxy http://proxy.mydre.org:3128 # skip this line on Surf Cloud
+git config --global user.email "you@example.com" # email associated with your github account
+git config --global user.name "Your Name" # username associated with your github account
 ```
 
 This will make a ~/.gitconfig file
-When pushing changes to a repository, you will be asked for your username and password. The password should be a 'fine-grained token' that you can set from https://github.com/settings/profile  --> Developer Settings --> Personal Access Tokens. Make sure to select all or individual repositories. Set the permission for 'Content' to read/write, and ensure that resource owner is set to EDS-Bioinformatics-Laboratory.
 
-_Note_   
-I also tried   
-```
-ssh-keygen -t ed25519 -C "you@example.com"
-eval "$(ssh-agent -s)"
-ssh-add ~/.ssh/id_ed25519
-cat ~/.ssh/id_ed25519.pub
-```
-and next, add the printed public key to GitHub → Settings → SSH and GPG keys. However, I could not get that to work.    
+When pushing changes to a repository, you will be asked for your username and password. The password should be a 'fine-grained token' that you can set from https://github.com/settings/profile  --> Developer Settings --> Personal Access Tokens. Set resource owner to EDS-Bioinformatics-Laboratory. Select all or individual repositories. Set the permission for 'Contents' to read/write.
+
+
 
 * Clone the ansible repository
 
@@ -310,11 +303,24 @@ rclone sync . RD:/Bioinformatics/myDre
 ```
 
 ## **Troubleshooting**
-- With Vscode.yml and Conda.yml you may sometimes get an error like: ".......Conflicting values set for option 
-Signed-By regarding source https://packages.microsoft.com/repos/code .......". It is unclear why this happens. So 
-far I fixed this by deleting the files in /usr/share/keyring that were installed at the moment you executed the 
-ansible playbook. In addition, I deleted the _conda.list_ and/or _vscode.list_ and/or _vscode.sources_, and 
-_packages_microsfot_com_repost_code.list_. See also: [here](https://askubuntu.com/questions/1433368/how-to-solve-gpg-error-with-packages-microsoft-com-pubkey)
+- With Vscode.yml and Conda.yml you may sometimes get an error like: ".......Conflicting values set for option Signed-By regarding source https://packages.microsoft.com/repos/code .......". It is unclear why this happens. So far I fixed this by deleting the files in /usr/share/keyring that were installed at the moment you executed the ansible playbook. In addition, I deleted the _conda.list_ and/or _vscode.list_ and/or _vscode.sources_, and _packages_microsfot_com_repost_code.list_. See also: [here](https://askubuntu.com/questions/1433368/how-to-solve-gpg-error-with-packages-microsoft-com-pubkey)
+
+
+
+## **GitHub authorisation**
+
+Instead of using a personal access token, it should be possible to use the following:  
+
+```
+ssh-keygen -t ed25519 -C "you@example.com"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+cat ~/.ssh/id_ed25519.pub
+```
+
+and next, add the printed public key to GitHub → Settings → SSH and GPG keys. However, for unknown reason this didn't seem to work.
+
+​    
 
 ## **External Access list**
 
