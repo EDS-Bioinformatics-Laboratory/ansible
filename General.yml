@@ -49,12 +49,13 @@
           - gedit
         state: present
 
-    # --- User-home items (no sudo) ---
+    # --- User-home items (force user ownership even when playbook runs with sudo) ---
     - name: Ensure RD directory exists on user's Desktop
       ansible.builtin.file:
         path: "{{ root_path }}/Desktop/RD"
         state: directory
         mode: "0755"
+        owner: "{{ username }}"
       become: yes
       tags: rd
 
@@ -64,6 +65,15 @@
         dest: "{{ root_path }}/ENCORE"
         version: "{{ ansible_repo_branch | default('main') }}"
         update: yes
+      become: yes
+      become_user: "{{ username }}"
+
+    - name: Ensure ENCORE repository tree is owned by user
+      ansible.builtin.file:
+        path: "{{ root_path }}/ENCORE"
+        state: directory
+        recurse: yes
+        owner: "{{ username }}"
       become: yes
 
     - name: Display success message
