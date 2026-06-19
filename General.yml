@@ -50,12 +50,19 @@
         state: present
 
     # --- User-home items (force user ownership even when playbook runs with sudo) ---
+    - name: Resolve target user's primary group
+      ansible.builtin.command: id -gn "{{ username }}"
+      register: target_user_group
+      changed_when: false
+      become: yes
+
     - name: Ensure RD directory exists on user's Desktop
       ansible.builtin.file:
         path: "{{ root_path }}/Desktop/RD"
         state: directory
         mode: "0755"
         owner: "{{ username }}"
+        group: "{{ target_user_group.stdout }}"
       become: yes
       tags: rd
 
@@ -74,6 +81,7 @@
         state: directory
         recurse: yes
         owner: "{{ username }}"
+        group: "{{ target_user_group.stdout }}"
       become: yes
 
     - name: Display success message
