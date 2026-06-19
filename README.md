@@ -45,14 +45,22 @@ _This installed:_
 To configure git:
 
 ```
-git config --global http.proxy http://proxy.mydre.org:3128 # skip this line on Surf Cloud
+# Skip the next line on SURF Research Cloud
+git config --global http.proxy http://proxy.mydre.org:3128 
+
+#Skip the next two lines on myDre
 git config --global user.email "you@example.com" # email associated with your github account
 git config --global user.name "Your Name" # username associated with your github account
 ```
 
 This will make a ~/.gitconfig file
 
-When pushing changes to a repository, you will be asked for your username and password. The password should be a 'fine-grained token' that you can set from https://github.com/settings/profile  --> Developer Settings --> Personal Access Tokens. Set resource owner to EDS-Bioinformatics-Laboratory. Select all or individual repositories. Set the permission for 'Contents' to read/write.
+
+
+Note:
+
+* So far, pushing to a github directory on myDre does not work. On SURF Research Cloud it does work.
+* For SURF Research Cloud: when pushing changes to a repository, you will be asked for your username and password. The password should be a 'fine-grained token' that you can set from https://github.com/settings/profile  --> Developer Settings --> Personal Access Tokens. Set resource owner to EDS-Bioinformatics-Laboratory. Select all or individual repositories. Set the permission for 'Contents' to read/write.
 
 
 
@@ -64,7 +72,11 @@ git clone https://github.com/EDS-Bioinformatics-Laboratory/ansible.git
 cd ansible
 ```
 
-_Update Barbera_
+
+
+_Alternative for SURF Research Cloud_
+
+This approach does not seem to work because ssh on myDre is disabled.
 
 Transfer your git RSA key to the virtual machine in ~/.ssh/ Change permissions to rw for the user only. Then clone the repository via SSH (not HTTPS)
 
@@ -82,6 +94,7 @@ cd ansible
   * The selection tags do currently not work.
 
 
+
 ## Installation and configuration of software with Ansible
 
 * Execute playbooks
@@ -90,13 +103,17 @@ _Notes:_
 * In case you need to debug, you can start by using ``-vvv`` instead of ``-v``
 * All steps are mandatory unless indicated.
 
-Either run the playbooks individually, or run everything at once via the Main.yml playbook
+Either run the playbooks individually, or run everything at once via the *Main.yml* playbook
+
+
 
 ### Main playbook, to install everything
 
 ```
 sudo ansible-playbook -i hosts -v Main.yml
 ```
+
+
 
 ### Individual playbooks
 
@@ -120,7 +137,7 @@ General.yml also sets the **timezone**:
 - If your system time is already correct, you don’t need to wait for anything.
 - Enabling NTP doesn’t always “snap” the clock instantly; it may take a short moment to converge depending on network and current drift, but usually it’s quick.
 
-_Note:_ at this point you can mount your Research Drive account following the instructions in the next section, or you can continue to first install software with the remaining playbooks. Mounting Research Drive at this point may help to easily transfer files and copy-paste (see below) in case you need to debug or change files.
+_Note:_ at this point you can mount your Research Drive account following the instructions in the section further down in this document, or you can continue to first install software with the remaining playbooks. Mounting Research Drive at this point may help to easily transfer files and copy-paste (see below) in case you need to debug or change files.
 
 
 ```
@@ -143,7 +160,7 @@ _This installed:_
 - Visual Studio Code
 
 _Notes:_
-- VScode can run from the commandline: ``code`` or ``vscode``
+- VScode can run from the commandline: ``code`` or ``vscode`` (first run next playbook)
 
 - When you start VScode for the first time, then pay attention to any message in VSCode. You may be asked to update certain parts. 
 
@@ -213,6 +230,7 @@ _This installed:_
     - _juliaup self update_ followed by 
 	- _juliaup update_ to update to the latest version.  
 
+- Note: if you get an error 'The read operation timed out' then run the Playbook again.
 
 ```
 sudo ansible-playbook -i hosts -v Containers.yml   #OPTIONAL

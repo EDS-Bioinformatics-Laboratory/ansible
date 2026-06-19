@@ -1,0 +1,7 @@
+19 June 2026
+
+- Updated the README file w.r.t. configuration of GitHub because this works differently on myDRE and SURF Research Cloud because ssh seems to be disabled. In the current configuration, we can still not push to GitHub on myDRE
+
+- Updated General.yml to explicitly set Owner/Group for the RD and ENCORE directories because, on myDre, these were still created as root/root on myDRE	
+     - TEST AGAIN ON SURF Research Cloud
+	 
