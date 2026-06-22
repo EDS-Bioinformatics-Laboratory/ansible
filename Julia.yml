@@ -195,7 +195,7 @@
 
     - name: Display installed packages
       ansible.builtin.debug:
-        msg: "{{ (pkg_status.stdout_lines | default((pkg_status.stdout | default('')) | splitlines)) if (pkg_status is defined) else [] }}"
+        msg: "{{ (pkg_status | default({})).get('stdout_lines', ((pkg_status | default({})).get('stdout', '')).split('\\n')) }}"
 
     - name: Clean up installer
       ansible.builtin.file:
