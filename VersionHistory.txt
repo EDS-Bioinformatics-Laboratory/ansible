@@ -1,7 +1,19 @@
-19 June 2026
+Version History Ansible playbooks.
 
-- Updated the README file w.r.t. configuration of GitHub because this works differently on myDRE and SURF Research Cloud because ssh seems to be disabled. In the current configuration, we can still not push to GitHub on myDRE
+========================
+19 June 2026
+========================
+
+- Updated the README file w.r.t. configuration of GitHub because this works differently on myDRE and SURF Research Cloud because ssh seems to be disabled. In the current configuration, we can still not push to GitHub on myDRE but there are further instructions in the myDre knowledge base:
+  git config --global user.name "Your Name"
+  git config --global user.email "you@example.com"
+  git commit --amend --reset-author
 
 - Updated General.yml to explicitly set Owner/Group for the RD and ENCORE directories because, on myDre, these were still created as root/root on myDRE	
      - TEST AGAIN ON SURF Research Cloud
 	 
+- Updated Julia.yml. To avoid errors, the code to display installed packages was changed to:
+
+   - name: Display installed packages
+      ansible.builtin.debug:
+        msg: "{{ (pkg_status | default({})).get('stdout_lines', ((pkg_status | default({})).get('stdout', '')).split('\\n')) }}"
